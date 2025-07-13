@@ -350,7 +350,10 @@ class _ExamScreenState extends State<ExamScreen> {
                             style: AppTextStyles.heading.copyWith(
                               color: AppColors.text,
                               height: 1.4,
+                              fontSize: 18,
                             ),
+                            maxLines: null,
+                            softWrap: true,
                           ),
                         ],
                       ),
@@ -509,7 +512,7 @@ class _AnswerOption extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             child: Row(
               children: [
                 // 선택 표시 원
@@ -540,8 +543,11 @@ class _AnswerOption extends StatelessWidget {
                     style: AppTextStyles.body.copyWith(
                       color: isSelected ? AppColors.secondary : AppColors.text,
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                      height: 1.4,
+                      height: 1.3,
+                      fontSize: 14,
                     ),
+                    maxLines: null,
+                    softWrap: true,
                   ),
                 ),
               ],

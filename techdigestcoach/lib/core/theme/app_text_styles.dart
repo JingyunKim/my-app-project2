@@ -8,44 +8,45 @@
 /// 버전: 1.0.0
 
 import "package:flutter/material.dart";
+import "package:google_fonts/google_fonts.dart";
 import "app_colors.dart";
 
 /// 앱의 텍스트 스타일 정의
 class AppTextStyles {
-  static const TextStyle title = TextStyle(
+  static TextStyle get title => GoogleFonts.inter(
     fontSize: 32,
     fontWeight: FontWeight.w700,
     color: AppColors.text,
     letterSpacing: -0.5,
   );
   
-  static const TextStyle heading = TextStyle(
+  static TextStyle get heading => GoogleFonts.inter(
     fontSize: 24,
     fontWeight: FontWeight.w600,
     color: AppColors.text,
     letterSpacing: -0.3,
   );
   
-  static const TextStyle subtitle = TextStyle(
+  static TextStyle get subtitle => GoogleFonts.inter(
     fontSize: 18,
     fontWeight: FontWeight.w500,
     color: AppColors.text,
   );
   
-  static const TextStyle body = TextStyle(
+  static TextStyle get body => GoogleFonts.inter(
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: AppColors.text,
     height: 1.5,
   );
   
-  static const TextStyle caption = TextStyle(
+  static TextStyle get caption => GoogleFonts.inter(
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: AppColors.textSecondary,
   );
   
-  static const TextStyle button = TextStyle(
+  static TextStyle get button => GoogleFonts.inter(
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: AppColors.surface,

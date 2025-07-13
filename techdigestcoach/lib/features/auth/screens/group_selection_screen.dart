@@ -1,7 +1,7 @@
-/// 그룹 선택 화면
+/// 과목 선택 화면
 /// 
-/// 사용자가 소속 그룹을 선택하는 화면입니다.
-/// BD 그룹과 STAFF 그룹 중에서 선택할 수 있으며, 그룹별로 다른 문제가 제공됩니다.
+/// 사용자가 소속 과목을 선택하는 화면입니다.
+/// BD 과목과 STAFF 과목 중에서 선택할 수 있으며, 과목별로 다른 문제가 제공됩니다.
 /// 
 /// 작성자: 개발팀
 /// 작성일: 2024
@@ -23,20 +23,20 @@ import '../../../providers/app_state.dart';
 // 화면 import
 import 'main_menu_screen.dart';
 
-/// 그룹 선택 화면 위젯
+/// 과목 선택 화면 위젯
 class GroupSelectionScreen extends StatelessWidget {
   const GroupSelectionScreen({super.key});
 
-  /// 그룹 선택 처리 메소드
+  /// 과목 선택 처리 메소드
   void _handleGroupSelection(BuildContext context, UserGroup group) {
-    print('그룹 선택: $group');
+    print('과목 선택: $group');
     context.read<AppState>().selectGroup(group);
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => const MainMenuScreen()),
     );
   }
 
-  /// 그룹 선택 화면 UI를 구성하는 메소드
+  /// 과목 선택 화면 UI를 구성하는 메소드
   @override
   Widget build(BuildContext context) {
     print('GroupSelectionScreen build 메소드가 호출되었습니다.');
@@ -44,7 +44,7 @@ class GroupSelectionScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
-          '그룹 선택',
+          '과목 선택',
           style: AppTextStyles.heading.copyWith(
             color: AppColors.text,
             fontWeight: FontWeight.w600,
@@ -69,79 +69,81 @@ class GroupSelectionScreen extends StatelessWidget {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20),
-                // 안내 메시지
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: AppColors.info.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppColors.info.withOpacity(0.2),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.info,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(
-                          Icons.info_outline,
-                          color: AppColors.surface,
-                          size: 20,
-                        ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  // 안내 메시지
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: AppColors.info.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: AppColors.info.withOpacity(0.2),
+                        width: 1,
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          '소속 그룹을 선택해주세요.\n그룹별로 다른 문제가 제공됩니다.',
-                          style: AppTextStyles.body.copyWith(
-                            color: AppColors.textSecondary,
-                            height: 1.5,
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: AppColors.info,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(
+                            Icons.info_outline,
+                            color: AppColors.surface,
+                            size: 20,
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            '소속 과목을 선택해주세요.\n과목별로 다른 문제가 제공됩니다.',
+                            style: AppTextStyles.body.copyWith(
+                              color: AppColors.textSecondary,
+                              height: 1.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 32),
-                Text(
-                  '그룹 선택',
-                  style: AppTextStyles.heading.copyWith(
-                    color: AppColors.text,
-                    fontWeight: FontWeight.w600,
+                  const SizedBox(height: 32),
+                  Text(
+                    '과목 선택',
+                    style: AppTextStyles.heading.copyWith(
+                      color: AppColors.text,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                // BD 그룹 카드
-                _GroupCard(
-                  title: 'BD 그룹',
-                  subtitle: '비즈니스 개발팀',
-                  description: '비즈니스 관련 문제를 풀어보세요',
-                  icon: Icons.business_outlined,
-                  color: AppColors.primary,
-                  onTap: () => _handleGroupSelection(context, UserGroup.bd),
-                ),
-                const SizedBox(height: 16),
-                // STAFF 그룹 카드
-                _GroupCard(
-                  title: 'STAFF 그룹',
-                  subtitle: '스태프팀',
-                  description: '일반 업무 관련 문제를 풀어보세요',
-                  icon: Icons.people_outline,
-                  color: AppColors.secondary,
-                  onTap: () => _handleGroupSelection(context, UserGroup.staff),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  // BD 과목 카드
+                  _GroupCard(
+                    title: 'BD 과목',
+                    subtitle: '비즈니스 개발팀',
+                    description: '비즈니스 관련 문제를 풀어보세요',
+                    icon: Icons.business_outlined,
+                    color: AppColors.primary,
+                    onTap: () => _handleGroupSelection(context, UserGroup.bd),
+                  ),
+                  const SizedBox(height: 16),
+                  // STAFF 과목 카드
+                  _GroupCard(
+                    title: 'STAFF 과목',
+                    subtitle: '스태프팀',
+                    description: '일반 업무 관련 문제를 풀어보세요',
+                    icon: Icons.people_outline,
+                    color: AppColors.secondary,
+                    onTap: () => _handleGroupSelection(context, UserGroup.staff),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -150,7 +152,7 @@ class GroupSelectionScreen extends StatelessWidget {
   }
 }
 
-/// 그룹 선택 카드 위젯
+/// 과목 선택 카드 위젯
 class _GroupCard extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -172,17 +174,20 @@ class _GroupCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: color.withOpacity(0.2),
-          width: 1,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            color,
+            color.withOpacity(0.8),
+          ],
         ),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.1),
+            color: color.withOpacity(0.3),
             blurRadius: 15,
-            offset: const Offset(0, 5),
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -200,9 +205,7 @@ class _GroupCard extends StatelessWidget {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [color, color.withOpacity(0.7)],
-                    ),
+                    color: AppColors.surface.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Icon(
@@ -216,38 +219,53 @@ class _GroupCard extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         title,
                         style: AppTextStyles.heading.copyWith(
-                          color: color,
+                          color: AppColors.surface,
                           fontWeight: FontWeight.w700,
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
                       Text(
                         subtitle,
                         style: AppTextStyles.subtitle.copyWith(
-                          color: AppColors.textSecondary,
+                          color: AppColors.surface.withOpacity(0.9),
                           fontWeight: FontWeight.w500,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 8),
                       Text(
                         description,
                         style: AppTextStyles.body.copyWith(
-                          color: AppColors.textLight,
-                          height: 1.4,
+                          color: AppColors.surface.withOpacity(0.8),
+                          height: 1.3,
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
                 // 화살표 아이콘
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: color.withOpacity(0.6),
-                  size: 20,
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppColors.surface.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    color: AppColors.surface,
+                    size: 18,
+                  ),
                 ),
               ],
             ),

@@ -9,6 +9,7 @@
 
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
+import "package:google_fonts/google_fonts.dart";
 
 // 스타일 import
 import "core/theme/app_colors.dart";
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
       title: "TechDigestCoach",
       theme: ThemeData(
         useMaterial3: true,
+        fontFamily: GoogleFonts.inter().fontFamily,
         colorScheme: ColorScheme.light(
           primary: AppColors.primary,
           secondary: AppColors.secondary,
@@ -50,13 +52,18 @@ class MyApp extends StatelessWidget {
           background: AppColors.background,
         ),
         scaffoldBackgroundColor: AppColors.background,
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           backgroundColor: AppColors.surface,
           foregroundColor: AppColors.text,
           elevation: 0,
           centerTitle: true,
+          titleTextStyle: GoogleFonts.inter(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: AppColors.text,
+          ),
         ),
-        textTheme: const TextTheme(
+        textTheme: TextTheme(
           displayLarge: AppTextStyles.title,
           headlineMedium: AppTextStyles.heading,
           bodyLarge: AppTextStyles.body,

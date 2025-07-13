@@ -55,7 +55,7 @@ class HistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('HistoryScreen build 메소드 호출');
-    final history = context.watch<AppState>().history;
+    final history = context.watch<AppState>().studyHistory;
     final accuracy = _calculateAccuracy(history);
     final groupedHistory = _groupHistoryByDate(history);
 

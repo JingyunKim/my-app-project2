@@ -45,10 +45,12 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
             colors: [
               AppColors.primary.withOpacity(0.1),
               AppColors.secondary.withOpacity(0.1),
@@ -57,71 +59,77 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(32),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // 로고 영역
-                Container(
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [AppColors.primary, AppColors.secondary],
-                    ),
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withOpacity(0.3),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // 로고 영역
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [AppColors.primary, AppColors.secondary],
                       ),
-                    ],
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.school_outlined,
+                      size: 60,
+                      color: AppColors.surface,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.school_outlined,
-                    size: 60,
-                    color: AppColors.surface,
+                  const SizedBox(height: 32),
+                  // 앱 제목
+                  Text(
+                    "TechDigestCoach",
+                    style: AppTextStyles.title.copyWith(
+                      color: AppColors.text,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(height: 32),
-                // 앱 제목
-                Text(
-                  "TechDigestCoach",
-                  style: AppTextStyles.title.copyWith(
-                    color: AppColors.text,
-                    fontWeight: FontWeight.w800,
+                  const SizedBox(height: 12),
+                  // 부제목
+                  Text(
+                    "사내 시험 학습 플랫폼",
+                    style: AppTextStyles.subtitle.copyWith(
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(height: 12),
-                // 부제목
-                Text(
-                  "사내 시험 학습 플랫폼",
-                  style: AppTextStyles.subtitle.copyWith(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w400,
+                  const SizedBox(height: 48),
+                  // 로딩 인디케이터
+                  SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                      strokeWidth: 3,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 48),
-                // 로딩 인디케이터
-                Container(
-                  width: 40,
-                  height: 40,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                    strokeWidth: 3,
+                  const SizedBox(height: 32),
+                  // 버전 정보
+                  Text(
+                    "Version 1.0.0",
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textLight,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(height: 32),
-                // 버전 정보
-                Text(
-                  "Version 1.0.0",
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.textLight,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

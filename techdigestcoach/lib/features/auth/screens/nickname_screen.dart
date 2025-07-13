@@ -46,7 +46,7 @@ class _NicknameScreenState extends State<NicknameScreen> {
     setState(() => _isLoading = true);
     
     try {
-      await context.read<AppState>().login(_nicknameController.text.trim());
+      context.read<AppState>().loginUser(_nicknameController.text.trim());
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const GroupSelectionScreen()),

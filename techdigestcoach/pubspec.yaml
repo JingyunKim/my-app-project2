@@ -16,6 +16,7 @@ dependencies:
   fl_chart: ^0.66.0
   lottie: ^2.7.0
   json_annotation: ^4.8.1
+  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:
