@@ -158,45 +158,81 @@ class _NicknameScreenState extends State<NicknameScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.surface,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppColors.border,
-                      width: 1,
+                Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: AppColors.border,
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.text.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        controller: _nicknameController,
+                        maxLength: 20,
+                        decoration: InputDecoration(
+                          hintText: '닉네임을 입력하세요',
+                          hintStyle: AppTextStyles.body.copyWith(
+                            color: AppColors.textLight,
+                          ),
+                          prefixIcon: Icon(
+                            Icons.person_outline,
+                            color: AppColors.textSecondary,
+                          ),
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 16,
+                          ),
+                          counterText: '',
+                        ),
+                        style: AppTextStyles.body,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _handleSubmit(),
+                        onChanged: (value) {
+                          setState(() {});
+                        },
+                      ),
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.text.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    controller: _nicknameController,
-                    decoration: InputDecoration(
-                      hintText: '닉네임을 입력하세요',
-                      hintStyle: AppTextStyles.body.copyWith(
-                        color: AppColors.textLight,
-                      ),
-                      prefixIcon: Icon(
-                        Icons.person_outline,
-                        color: AppColors.textSecondary,
-                      ),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 16,
+                    Positioned(
+                      right: 16,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Text(
+                          '${_nicknameController.text.length}/20',
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.textLight,
+                            fontSize: 12,
+                          ),
+                        ),
                       ),
                     ),
-                    style: AppTextStyles.body,
-                    textInputAction: TextInputAction.done,
-                    onSubmitted: (_) => _handleSubmit(),
-                  ),
+                  ],
                 ),
                 const Spacer(),
+                // 안내사항
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    'LG CNS의 TechDigest 교재 기반 학습 APP입니다.',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textLight,
+                      height: 1.4,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 20),
                 // 시작 버튼
                 Container(
                   width: double.infinity,
