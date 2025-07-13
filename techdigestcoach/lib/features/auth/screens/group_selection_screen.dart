@@ -1,0 +1,259 @@
+/// 그룹 선택 화면
+/// 
+/// 사용자가 소속 그룹을 선택하는 화면입니다.
+/// BD 그룹과 STAFF 그룹 중에서 선택할 수 있으며, 그룹별로 다른 문제가 제공됩니다.
+/// 
+/// 작성자: 개발팀
+/// 작성일: 2024
+/// 버전: 1.0.0
+
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+// 스타일 import
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
+
+// 모델 import
+import '../../../shared/models/user_group.dart';
+
+// Provider import
+import '../../../providers/app_state.dart';
+
+// 화면 import
+import 'main_menu_screen.dart';
+
+/// 그룹 선택 화면 위젯
+class GroupSelectionScreen extends StatelessWidget {
+  const GroupSelectionScreen({super.key});
+
+  /// 그룹 선택 처리 메소드
+  void _handleGroupSelection(BuildContext context, UserGroup group) {
+    print('그룹 선택: $group');
+    context.read<AppState>().selectGroup(group);
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const MainMenuScreen()),
+    );
+  }
+
+  /// 그룹 선택 화면 UI를 구성하는 메소드
+  @override
+  Widget build(BuildContext context) {
+    print('GroupSelectionScreen build 메소드가 호출되었습니다.');
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: Text(
+          '그룹 선택',
+          style: AppTextStyles.heading.copyWith(
+            color: AppColors.text,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        backgroundColor: AppColors.surface,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.text),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AppColors.surface,
+              AppColors.background,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+                // 안내 메시지
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: AppColors.info.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.info.withOpacity(0.2),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.info,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.info_outline,
+                          color: AppColors.surface,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          '소속 그룹을 선택해주세요.\n그룹별로 다른 문제가 제공됩니다.',
+                          style: AppTextStyles.body.copyWith(
+                            color: AppColors.textSecondary,
+                            height: 1.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 32),
+                Text(
+                  '그룹 선택',
+                  style: AppTextStyles.heading.copyWith(
+                    color: AppColors.text,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // BD 그룹 카드
+                _GroupCard(
+                  title: 'BD 그룹',
+                  subtitle: '비즈니스 개발팀',
+                  description: '비즈니스 관련 문제를 풀어보세요',
+                  icon: Icons.business_outlined,
+                  color: AppColors.primary,
+                  onTap: () => _handleGroupSelection(context, UserGroup.bd),
+                ),
+                const SizedBox(height: 16),
+                // STAFF 그룹 카드
+                _GroupCard(
+                  title: 'STAFF 그룹',
+                  subtitle: '스태프팀',
+                  description: '일반 업무 관련 문제를 풀어보세요',
+                  icon: Icons.people_outline,
+                  color: AppColors.secondary,
+                  onTap: () => _handleGroupSelection(context, UserGroup.staff),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 그룹 선택 카드 위젯
+class _GroupCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String description;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _GroupCard({
+    required this.title,
+    required this.subtitle,
+    required this.description,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: color.withOpacity(0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Row(
+              children: [
+                // 아이콘 영역
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [color, color.withOpacity(0.7)],
+                    ),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: AppColors.surface,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 20),
+                // 텍스트 영역
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: AppTextStyles.heading.copyWith(
+                          color: color,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: AppTextStyles.subtitle.copyWith(
+                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        description,
+                        style: AppTextStyles.body.copyWith(
+                          color: AppColors.textLight,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // 화살표 아이콘
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: color.withOpacity(0.6),
+                  size: 20,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+} 
