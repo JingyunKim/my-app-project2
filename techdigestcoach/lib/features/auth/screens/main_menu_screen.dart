@@ -1,6 +1,6 @@
-/// 메인 메뉴 화면
+/// 학습 유형 선택 화면
 /// 
-/// 사용자가 학습 모드를 선택할 수 있는 메인 화면입니다.
+/// 사용자가 학습 모드를 선택할 수 있는 화면입니다.
 /// 연습 모드, 모의고사 모드, 학습 이력을 선택할 수 있으며,
 /// 사용자 정보와 과목 정보를 표시합니다.
 /// 
@@ -26,15 +26,114 @@ import '../../practice/screens/practice_screen.dart';
 import '../../exam/screens/exam_screen.dart';
 import '../../history/screens/history_screen.dart';
 import 'group_selection_screen.dart';
+import '../../settings/screens/settings_screen.dart';
 
-/// 메인 메뉴 화면 위젯
+/// 학습 유형 선택 화면 위젯
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
 
-  /// 메인 메뉴 화면 UI를 구성하는 메소드
+  /// 닉네임 변경 다이얼로그 표시 메소드
+  void _showNicknameChangeDialog(BuildContext context) {
+    final currentUser = context.read<AppState>().currentUser;
+    final nicknameController = TextEditingController(text: currentUser?.nickname ?? '');
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            '닉네임 변경',
+            style: AppTextStyles.heading.copyWith(
+              color: AppColors.text,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '새로운 닉네임을 입력해주세요',
+                style: AppTextStyles.body.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: nicknameController,
+                maxLength: 6,
+                decoration: InputDecoration(
+                  hintText: '닉네임을 입력하세요',
+                  hintStyle: AppTextStyles.body.copyWith(
+                    color: AppColors.textLight,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: AppColors.border),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: AppColors.primary),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                ),
+                style: AppTextStyles.body,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                '취소',
+                style: AppTextStyles.button.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final newNickname = nicknameController.text.trim();
+                if (newNickname.isNotEmpty) {
+                  context.read<AppState>().updateNickname(newNickname);
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('닉네임이 변경되었습니다.'),
+                      backgroundColor: AppColors.success,
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                '변경',
+                style: AppTextStyles.button.copyWith(
+                  color: AppColors.surface,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// 학습 유형 선택 화면 UI를 구성하는 메소드
   @override
   Widget build(BuildContext context) {
-    print('MainMenuScreen build 메소드가 호출되었습니다.');
+    print('학습 유형 선택 화면 build 메소드가 호출되었습니다.');
     final user = context.watch<AppState>().currentUser;
     final group = context.watch<AppState>().selectedGroup;
     
@@ -49,7 +148,7 @@ class MainMenuScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
-          '메인 메뉴',
+          '학습 유형 선택',
           style: AppTextStyles.heading.copyWith(
             color: AppColors.text,
             fontWeight: FontWeight.w600,
@@ -67,20 +166,12 @@ class MainMenuScreen extends StatelessWidget {
           },
         ),
         actions: [
-          // 과목 변경 버튼
-          IconButton(
-            icon: Icon(Icons.group_outlined, color: AppColors.textSecondary),
-            onPressed: () {
-              // 과목 선택 화면으로 이동
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const GroupSelectionScreen()),
-              );
-            },
-          ),
           IconButton(
             icon: Icon(Icons.settings_outlined, color: AppColors.textSecondary),
             onPressed: () {
-              // 설정 화면으로 이동 (추후 구현)
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              );
             },
           ),
         ],
@@ -117,24 +208,27 @@ class MainMenuScreen extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [primaryColor, secondaryColor],
-                              ),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: const Icon(
-                              Icons.person,
+                      // 과목 표시 (최상단)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: primaryColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            group == UserGroup.bd ? 'BD 과목' : 'STAFF 과목',
+                            style: AppTextStyles.caption.copyWith(
                               color: AppColors.surface,
-                              size: 30,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const SizedBox(width: 16),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,40 +238,16 @@ class MainMenuScreen extends StatelessWidget {
                                   style: AppTextStyles.heading.copyWith(
                                     color: AppColors.text,
                                     fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  '선택한 과목: ${group == UserGroup.bd ? 'BD 과목' : 'STAFF 과목'}',
-                                  style: AppTextStyles.body.copyWith(
-                                    color: AppColors.textSecondary,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: primaryColor,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    group == UserGroup.bd ? 'BD 과목' : 'STAFF 과목',
-                                    style: AppTextStyles.caption.copyWith(
-                                      color: AppColors.surface,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                    fontSize: 20,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          // 과목 변경 버튼 (카드 내부)
+                          // 닉네임 변경 버튼 (카드 내부)
                           IconButton(
                             onPressed: () {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(builder: (_) => const GroupSelectionScreen()),
-                              );
+                              _showNicknameChangeDialog(context);
                             },
                             icon: Icon(
                               Icons.edit_outlined,
@@ -190,7 +260,6 @@ class MainMenuScreen extends StatelessWidget {
                       const SizedBox(height: 20),
                       // 학습 이력 요약
                       Container(
-                        padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: AppColors.surface.withOpacity(0.8),
                           borderRadius: BorderRadius.circular(15),
@@ -199,58 +268,65 @@ class MainMenuScreen extends StatelessWidget {
                             width: 1,
                           ),
                         ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [accentColor, accentColor.withOpacity(0.7)],
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Icon(
-                                Icons.history_outlined,
-                                color: AppColors.surface,
-                                size: 20,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (_) => const HistoryScreen()),
+                              );
+                            },
+                            borderRadius: BorderRadius.circular(15),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
                                 children: [
-                                  Text(
-                                    '학습 이력',
-                                    style: AppTextStyles.subtitle.copyWith(
-                                      color: accentColor,
-                                      fontWeight: FontWeight.w600,
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [accentColor, accentColor.withOpacity(0.7)],
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: const Icon(
+                                      Icons.history_outlined,
+                                      color: AppColors.surface,
+                                      size: 20,
                                     ),
                                   ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    '나의 학습 현황을 확인해보세요',
-                                    style: AppTextStyles.caption.copyWith(
-                                      color: AppColors.textLight,
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '학습 이력',
+                                          style: AppTextStyles.subtitle.copyWith(
+                                            color: accentColor,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          '나의 학습 현황을 확인해보세요',
+                                          style: AppTextStyles.caption.copyWith(
+                                            color: AppColors.textLight,
+                                          ),
+                                        ),
+                                      ],
                                     ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: accentColor.withOpacity(0.6),
+                                    size: 16,
                                   ),
                                 ],
                               ),
                             ),
-                            IconButton(
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (_) => const HistoryScreen()),
-                                );
-                              },
-                              icon: Icon(
-                                Icons.arrow_forward_ios,
-                                color: accentColor.withOpacity(0.6),
-                                size: 16,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ],

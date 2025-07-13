@@ -59,4 +59,26 @@ class AppState extends ChangeNotifier {
     _studyHistory.clear();
     notifyListeners();
   }
+
+  /// 모든 데이터 초기화 메소드
+  void resetData() {
+    print("모든 데이터 초기화");
+    _currentUser = null;
+    _selectedGroup = UserGroup.bd;
+    _studyHistory.clear();
+    notifyListeners();
+  }
+
+  /// 닉네임 변경 메소드
+  void updateNickname(String newNickname) {
+    print("닉네임 변경: $newNickname");
+    if (_currentUser != null) {
+      _currentUser = User(
+        nickname: newNickname,
+        group: _currentUser!.group,
+        lastLoginDate: _currentUser!.lastLoginDate,
+      );
+      notifyListeners();
+    }
+  }
 }

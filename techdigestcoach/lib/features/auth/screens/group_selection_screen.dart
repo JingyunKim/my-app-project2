@@ -23,6 +23,7 @@ import '../../../providers/app_state.dart';
 // 화면 import
 import 'main_menu_screen.dart';
 import 'nickname_screen.dart';
+import '../../settings/screens/settings_screen.dart';
 
 /// 과목 선택 화면 위젯
 class GroupSelectionScreen extends StatelessWidget {
@@ -54,6 +55,17 @@ class GroupSelectionScreen extends StatelessWidget {
         backgroundColor: AppColors.surface,
         elevation: 0,
         automaticallyImplyLeading: false,
+        actions: [
+          // 설정 버튼
+          IconButton(
+            icon: Icon(Icons.settings_outlined, color: AppColors.textSecondary),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(

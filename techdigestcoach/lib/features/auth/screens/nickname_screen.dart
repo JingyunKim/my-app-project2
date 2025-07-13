@@ -31,17 +31,24 @@ class NicknameScreen extends StatefulWidget {
 class _NicknameScreenState extends State<NicknameScreen> {
   final _nicknameController = TextEditingController();
   bool _isLoading = false;
+  OverlayEntry? _overlayEntry;
 
   @override
   void dispose() {
     _nicknameController.dispose();
+    // 화면이 사라질 때 푸시 알림도 제거
+    _overlayEntry?.remove();
     super.dispose();
   }
 
   /// 닉네임 제출 처리 메소드
   Future<void> _handleSubmit() async {
     print('닉네임 제출: ${_nicknameController.text}');
-    if (_nicknameController.text.trim().isEmpty) return;
+    if (_nicknameController.text.trim().isEmpty) {
+      // 닉네임이 비어있을 때 푸시 알림 표시
+      _showToastMessage('닉네임을 입력해주세요.');
+      return;
+    }
 
     setState(() => _isLoading = true);
     
@@ -57,6 +64,68 @@ class _NicknameScreenState extends State<NicknameScreen> {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  /// 푸시 알림 표시 메소드
+  void _showToastMessage(String message) {
+    // 기존 푸시 알림이 있다면 제거
+    _overlayEntry?.remove();
+    
+    final overlay = Overlay.of(context);
+    
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).padding.top + 100,
+        left: 20,
+        right: 20,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            decoration: BoxDecoration(
+              color: AppColors.textSecondary,
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.textSecondary.withOpacity(0.3),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  color: AppColors.surface,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    message,
+                    style: AppTextStyles.body.copyWith(
+                      color: AppColors.surface,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    
+    overlay.insert(_overlayEntry!);
+    
+    // 1.5초 후 자동으로 제거
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+    });
   }
 
   /// 닉네임 입력 화면 UI를 구성하는 메소드
@@ -176,9 +245,9 @@ class _NicknameScreenState extends State<NicknameScreen> {
                           ),
                         ],
                       ),
-                      child: TextField(
-                        controller: _nicknameController,
-                        maxLength: 20,
+                                        child: TextField(
+                    controller: _nicknameController,
+                    maxLength: 6,
                         decoration: InputDecoration(
                           hintText: '닉네임을 입력하세요',
                           hintStyle: AppTextStyles.body.copyWith(
@@ -209,7 +278,7 @@ class _NicknameScreenState extends State<NicknameScreen> {
                       bottom: 0,
                       child: Center(
                         child: Text(
-                          '${_nicknameController.text.length}/20',
+                          '${_nicknameController.text.length}/6',
                           style: AppTextStyles.caption.copyWith(
                             color: AppColors.textLight,
                             fontSize: 12,
