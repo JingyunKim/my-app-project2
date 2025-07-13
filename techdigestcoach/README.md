@@ -1,16 +1,20 @@
-# techdigestcoach
+# TechDigestCoach
 
-A new Flutter project.
+사내 시험 학습용 앱
 
-## Getting Started
+## 개요
 
-This project is a starting point for a Flutter application.
+이 앱은 사내 시험 대비를 위한 연습 및 모의시험 기능을 제공합니다.
 
-A few resources to get you started if this is your first Flutter project:
+## 주요 기능
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- 연습 모드: 무제한 문제 풀이
+- 모의시험 모드: 30문제 랜덤 출제
+- 학습 이력 관리
+- BD/STAFF 그룹별 문제 분류
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 개발 환경
+
+- Flutter SDK: >=3.2.3
+- Dart SDK: >=3.2.3
+- 지원 플랫폼: iOS, Android
