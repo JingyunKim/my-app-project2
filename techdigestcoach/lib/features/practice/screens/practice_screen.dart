@@ -90,6 +90,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
     // 학습 이력 저장
     context.read<AppState>().addHistory(
       StudyHistory(
+        group: question.group,
         questionId: question.id,
         isCorrect: isCorrect,
         solvedDate: DateTime.now(),

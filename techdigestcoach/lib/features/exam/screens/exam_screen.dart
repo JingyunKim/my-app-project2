@@ -123,6 +123,7 @@ class _ExamScreenState extends State<ExamScreen> {
       if (_userAnswers[i] != null) {
         context.read<AppState>().addHistory(
           StudyHistory(
+            group: _questions[i].group,
             questionId: _questions[i].id,
             isCorrect: _userAnswers[i] == _questions[i].correctAnswer,
             solvedDate: DateTime.now(),

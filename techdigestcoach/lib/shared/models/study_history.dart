@@ -7,18 +7,22 @@
 /// 작성일: 2024
 /// 버전: 1.0.0
 
+import 'user_group.dart';
+
 /// 학습 이력 모델
 class StudyHistory {
   final String questionId;
   final bool isCorrect;
   final DateTime solvedDate;
   final bool isPracticeMode;
+  final UserGroup group;
 
   const StudyHistory({
     required this.questionId,
     required this.isCorrect,
     required this.solvedDate,
     required this.isPracticeMode,
+    required this.group,
   });
 
   /// JSON에서 StudyHistory 객체 생성
@@ -28,6 +32,7 @@ class StudyHistory {
       isCorrect: json["isCorrect"] as bool,
       solvedDate: DateTime.parse(json["solvedDate"] as String),
       isPracticeMode: json["isPracticeMode"] as bool,
+      group: UserGroup.values.firstWhere((e) => e.toString() == json["group"]),
     );
   }
 
@@ -38,11 +43,12 @@ class StudyHistory {
       "isCorrect": isCorrect,
       "solvedDate": solvedDate.toIso8601String(),
       "isPracticeMode": isPracticeMode,
+      "group": group.toString(),
     };
   }
 
   @override
   String toString() {
-    return "StudyHistory(questionId: $questionId, isCorrect: $isCorrect, solvedDate: $solvedDate, isPracticeMode: $isPracticeMode)";
+    return "StudyHistory(questionId: $questionId, isCorrect: $isCorrect, solvedDate: $solvedDate, isPracticeMode: $isPracticeMode, group: $group)";
   }
 }
