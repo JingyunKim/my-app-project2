@@ -11,11 +11,17 @@ import "package:flutter/material.dart";
 
 /// 앱의 색상 정의
 class AppColors {
-  // 블루 계열 메인 컬러
-  static const Color primary = Color(0xFF3B82F6);      // 파란색
-  static const Color secondary = Color(0xFF1E40AF);    // 진한 파란색
-  static const Color accent = Color(0xFF60A5FA);       // 밝은 파란색
-  static const Color accent2 = Color(0xFF93C5FD);      // 연한 파란색
+  // BD 과목용 파스텔 블루 계열 메인 컬러
+  static const Color primary = Color(0xFF3B82F6);      // 파스텔 파란색
+  static const Color secondary = Color(0xFF1E40AF);    // 파스텔 진한 파란색
+  static const Color accent = Color(0xFF60A5FA);       // 파스텔 밝은 파란색
+  static const Color accent2 = Color(0xFF93C5FD);      // 파스텔 연한 파란색
+  
+  // STAFF 과목용 파스텔 주황색 계열 컬러
+  static const Color staffPrimary = Color(0xFFF97316);    // 파스텔 주황색
+  static const Color staffSecondary = Color(0xFFEA580C);  // 파스텔 진한 주황색
+  static const Color staffAccent = Color(0xFFFB923C);     // 파스텔 밝은 주황색
+  static const Color staffAccent2 = Color(0xFFFDBA74);    // 파스텔 연한 주황색
   
   // 배경 및 표면 색상 (회색 계열)
   static const Color background = Color(0xFFF8FAFC);   // 연한 회색

@@ -38,6 +38,13 @@ class MainMenuScreen extends StatelessWidget {
     final user = context.watch<AppState>().currentUser;
     final group = context.watch<AppState>().selectedGroup;
     
+    // 과목별 색상 설정
+    final isStaffGroup = group == UserGroup.staff;
+    final primaryColor = isStaffGroup ? AppColors.staffPrimary : AppColors.primary;
+    final secondaryColor = isStaffGroup ? AppColors.staffSecondary : AppColors.secondary;
+    final accentColor = isStaffGroup ? AppColors.staffAccent : AppColors.accent;
+    final accent2Color = isStaffGroup ? AppColors.staffAccent2 : AppColors.accent2;
+    
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -100,11 +107,11 @@ class MainMenuScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [AppColors.primary.withOpacity(0.1), AppColors.secondary.withOpacity(0.1)],
+                      colors: [primaryColor.withOpacity(0.1), secondaryColor.withOpacity(0.1)],
                     ),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: AppColors.primary.withOpacity(0.2),
+                      color: primaryColor.withOpacity(0.2),
                       width: 1,
                     ),
                   ),
@@ -117,7 +124,7 @@ class MainMenuScreen extends StatelessWidget {
                             height: 60,
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: [AppColors.primary, AppColors.secondary],
+                                colors: [primaryColor, secondaryColor],
                               ),
                               borderRadius: BorderRadius.circular(15),
                             ),
@@ -139,11 +146,19 @@ class MainMenuScreen extends StatelessWidget {
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: 8),
+                                Text(
+                                  '선택한 과목: ${group == UserGroup.bd ? 'BD 과목' : 'STAFF 과목'}',
+                                  style: AppTextStyles.body.copyWith(
+                                    color: AppColors.textSecondary,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                   decoration: BoxDecoration(
-                                    color: group == UserGroup.bd ? AppColors.primary : AppColors.secondary,
+                                    color: primaryColor,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
@@ -180,7 +195,7 @@ class MainMenuScreen extends StatelessWidget {
                           color: AppColors.surface.withOpacity(0.8),
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(
-                            color: AppColors.accent.withOpacity(0.3),
+                            color: accentColor.withOpacity(0.3),
                             width: 1,
                           ),
                         ),
@@ -191,7 +206,7 @@ class MainMenuScreen extends StatelessWidget {
                               height: 40,
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
-                                  colors: [AppColors.accent, AppColors.accent.withOpacity(0.7)],
+                                  colors: [accentColor, accentColor.withOpacity(0.7)],
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -209,7 +224,7 @@ class MainMenuScreen extends StatelessWidget {
                                   Text(
                                     '학습 이력',
                                     style: AppTextStyles.subtitle.copyWith(
-                                      color: AppColors.accent,
+                                      color: accentColor,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -231,7 +246,7 @@ class MainMenuScreen extends StatelessWidget {
                               },
                               icon: Icon(
                                 Icons.arrow_forward_ios,
-                                color: AppColors.accent.withOpacity(0.6),
+                                color: accentColor.withOpacity(0.6),
                                 size: 16,
                               ),
                             ),
@@ -262,7 +277,7 @@ class MainMenuScreen extends StatelessWidget {
                           subtitle: '무제한 학습',
                           description: '시간 제한 없이 문제를 풀어보세요',
                           icon: Icons.book_outlined,
-                          color: AppColors.primary,
+                          color: primaryColor,
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(builder: (_) => const PracticeScreen()),
@@ -279,7 +294,7 @@ class MainMenuScreen extends StatelessWidget {
                           subtitle: '실제 시험 환경',
                           description: '30문제를 45분 안에 풀어보세요',
                           icon: Icons.timer_outlined,
-                          color: AppColors.secondary,
+                          color: secondaryColor,
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(builder: (_) => const ExamScreen()),

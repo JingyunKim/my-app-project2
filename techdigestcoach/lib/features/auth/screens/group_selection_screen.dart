@@ -22,6 +22,7 @@ import '../../../providers/app_state.dart';
 
 // 화면 import
 import 'main_menu_screen.dart';
+import 'nickname_screen.dart';
 
 /// 과목 선택 화면 위젯
 class GroupSelectionScreen extends StatelessWidget {
@@ -52,10 +53,7 @@ class GroupSelectionScreen extends StatelessWidget {
         ),
         backgroundColor: AppColors.surface,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.text),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -104,7 +102,7 @@ class GroupSelectionScreen extends StatelessWidget {
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            '소속 과목을 선택해주세요.\n과목별로 다른 문제가 제공됩니다.',
+                            '학습하고자 하는 TechDigest 과목을 선택해주세요.\n과목별로 다른 문제가 제공됩니다.',
                             style: AppTextStyles.body.copyWith(
                               color: AppColors.textSecondary,
                               height: 1.5,
@@ -126,7 +124,7 @@ class GroupSelectionScreen extends StatelessWidget {
                   // BD 과목 카드
                   _GroupCard(
                     title: 'BD 과목',
-                    subtitle: '비즈니스 개발팀',
+                    subtitle: 'BD(Business Development)',
                     description: '비즈니스 관련 문제를 풀어보세요',
                     icon: Icons.business_outlined,
                     color: AppColors.primary,
@@ -136,10 +134,10 @@ class GroupSelectionScreen extends StatelessWidget {
                   // STAFF 과목 카드
                   _GroupCard(
                     title: 'STAFF 과목',
-                    subtitle: '스태프팀',
+                    subtitle: '스태프(Staff)',
                     description: '일반 업무 관련 문제를 풀어보세요',
                     icon: Icons.people_outline,
-                    color: AppColors.secondary,
+                    color: AppColors.staffPrimary,
                     onTap: () => _handleGroupSelection(context, UserGroup.staff),
                   ),
                 ],
