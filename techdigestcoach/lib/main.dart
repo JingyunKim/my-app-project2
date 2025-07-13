@@ -9,8 +9,134 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
 /// Apple 스타일 색상 정의
+/// 사용자 그룹 정의
+enum UserGroup {
+  bd,
+  staff,
+}
+
+/// 문제 데이터 모델
+class Question {
+  final String id;
+  final String question;
+  final List<String> options;
+  final int correctAnswer;
+  final String explanation;
+  final UserGroup group;
+
+  const Question({
+    required this.id,
+    required this.question,
+    required this.options,
+    required this.correctAnswer,
+    required this.explanation,
+    required this.group,
+  });
+}
+
+/// 사용자 모델
+class User {
+  final String nickname;
+  final UserGroup group;
+  final DateTime lastLoginDate;
+
+  const User({
+    required this.nickname,
+    required this.group,
+    required this.lastLoginDate,
+  });
+}
+
+/// 학습 이력 모델
+class StudyHistory {
+  final String questionId;
+  final bool isCorrect;
+  final DateTime solvedDate;
+  final bool isPracticeMode;
+
+  const StudyHistory({
+    required this.questionId,
+    required this.isCorrect,
+    required this.solvedDate,
+    required this.isPracticeMode,
+  });
+}
+
+/// 임시 문제 데이터
+final List<Question> sampleQuestions = [
+  Question(
+    id: '1',
+    question: '다음 중 올바른 설명은?',
+    options: [
+      'A. 임시 보기 1',
+      'B. 임시 보기 2',
+      'C. 임시 보기 3',
+      'D. 임시 보기 4',
+      'E. 임시 보기 5',
+    ],
+    correctAnswer: 2,
+    explanation: '정답은 C입니다. 임시 해설입니다.',
+    group: UserGroup.bd,
+  ),
+  Question(
+    id: '2',
+    question: '다음 설명 중 틀린 것은?',
+    options: [
+      'A. 임시 보기 1',
+      'B. 임시 보기 2',
+      'C. 임시 보기 3',
+      'D. 임시 보기 4',
+      'E. 임시 보기 5',
+    ],
+    correctAnswer: 4,
+    explanation: '정답은 D입니다. 임시 해설입니다.',
+    group: UserGroup.staff,
+  ),
+];
+
+/// 앱의 상태를 관리하는 클래스
+class AppState extends ChangeNotifier {
+  User? _currentUser;
+  List<StudyHistory> _history = [];
+  UserGroup? _selectedGroup;
+
+  User? get currentUser => _currentUser;
+  List<StudyHistory> get history => _history;
+  UserGroup? get selectedGroup => _selectedGroup;
+
+  /// 사용자 로그인 처리 메소드
+  Future<void> login(String nickname) async {
+    print('사용자 로그인: $nickname');
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('nickname', nickname);
+    _currentUser = User(
+      nickname: nickname,
+      group: UserGroup.bd, // 초기값, 나중에 선택
+      lastLoginDate: DateTime.now(),
+    );
+    notifyListeners();
+  }
+
+  /// 그룹 선택 처리 메소드
+  void selectGroup(UserGroup group) {
+    print('그룹 선택: $group');
+    _selectedGroup = group;
+    notifyListeners();
+  }
+
+  /// 학습 이력 추가 메소드
+  void addHistory(StudyHistory history) {
+    print('학습 이력 추가: ${history.questionId}');
+    _history.add(history);
+    notifyListeners();
+  }
+}
+
 class AppColors {
   static const Color primary = Color(0xFF007AFF);
   static const Color secondary = Color(0xFF5856D6);
@@ -19,6 +145,7 @@ class AppColors {
   static const Color text = Color(0xFF000000);
   static const Color textSecondary = Color(0xFF8E8E93);
   static const Color divider = Color(0xFFC6C6C8);
+  static const Color error = Color(0xFFFF3B30);
 }
 
 /// Apple 스타일 텍스트 스타일 정의
@@ -45,7 +172,12 @@ class AppTextStyles {
 /// 앱의 메인 진입점
 void main() {
   print('TechDigestCoach 앱이 시작됩니다.');
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AppState(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 /// 앱의 루트 위젯
@@ -85,8 +217,31 @@ class MyApp extends StatelessWidget {
 }
 
 /// 스플래시 화면 위젯
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    print('SplashScreen initState 호출');
+    _navigateToNextScreen();
+  }
+
+  /// 다음 화면으로 자동 전환하는 메소드
+  Future<void> _navigateToNextScreen() async {
+    print('3초 후 닉네임 입력 화면으로 전환합니다.');
+    await Future.delayed(const Duration(seconds: 3));
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const NicknameScreen()),
+      );
+    }
+  }
 
   /// 스플래시 화면 UI를 구성하는 메소드
   @override
@@ -117,3 +272,1216 @@ class SplashScreen extends StatelessWidget {
     );
   }
 }
+
+/// 닉네임 입력 화면 위젯
+class NicknameScreen extends StatefulWidget {
+  const NicknameScreen({super.key});
+
+  @override
+  State<NicknameScreen> createState() => _NicknameScreenState();
+}
+
+class _NicknameScreenState extends State<NicknameScreen> {
+  final _nicknameController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _nicknameController.dispose();
+    super.dispose();
+  }
+
+  /// 닉네임 제출 처리 메소드
+  Future<void> _handleSubmit() async {
+    print('닉네임 제출: ${_nicknameController.text}');
+    if (_nicknameController.text.trim().isEmpty) return;
+
+    setState(() => _isLoading = true);
+    
+    try {
+      await context.read<AppState>().login(_nicknameController.text.trim());
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const GroupSelectionScreen()),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  /// 닉네임 입력 화면 UI를 구성하는 메소드
+  @override
+  Widget build(BuildContext context) {
+    print('NicknameScreen build 메소드가 호출되었습니다.');
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text('닉네임 입력'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '닉네임을 입력해주세요',
+              style: AppTextStyles.heading,
+            ),
+            const SizedBox(height: 24),
+            TextField(
+              controller: _nicknameController,
+              decoration: const InputDecoration(
+                hintText: '닉네임 입력',
+                prefixIcon: Icon(Icons.person_outline),
+              ),
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _handleSubmit(),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _handleSubmit,
+                child: _isLoading
+                    ? const CupertinoActivityIndicator()
+                    : const Text('시작하기'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 그룹 선택 화면 위젯
+class GroupSelectionScreen extends StatelessWidget {
+  const GroupSelectionScreen({super.key});
+
+  /// 그룹 선택 처리 메소드
+  void _handleGroupSelection(BuildContext context, UserGroup group) {
+    print('그룹 선택: $group');
+    context.read<AppState>().selectGroup(group);
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const MainMenuScreen()),
+    );
+  }
+
+  /// 그룹 선택 화면 UI를 구성하는 메소드
+  @override
+  Widget build(BuildContext context) {
+    print('GroupSelectionScreen build 메소드가 호출되었습니다.');
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text('그룹 선택'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '소속 그룹을 선택해주세요',
+              style: AppTextStyles.heading,
+            ),
+            const SizedBox(height: 32),
+            _GroupCard(
+              title: 'BD 그룹',
+              color: AppColors.primary,
+              onTap: () => _handleGroupSelection(context, UserGroup.bd),
+            ),
+            const SizedBox(height: 16),
+            _GroupCard(
+              title: 'STAFF 그룹',
+              color: AppColors.secondary,
+              onTap: () => _handleGroupSelection(context, UserGroup.staff),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 그룹 선택 카드 위젯
+class _GroupCard extends StatelessWidget {
+  final String title;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _GroupCard({
+    required this.title,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: color.withOpacity(0.1),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          width: double.infinity,
+          child: Column(
+            children: [
+              Icon(Icons.group_outlined, color: color, size: 48),
+              const SizedBox(height: 16),
+              Text(
+                title,
+                style: AppTextStyles.heading.copyWith(color: color),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 메인 메뉴 화면 위젯
+class MainMenuScreen extends StatelessWidget {
+  const MainMenuScreen({super.key});
+
+  /// 메인 메뉴 화면 UI를 구성하는 메소드
+  @override
+  Widget build(BuildContext context) {
+    print('MainMenuScreen build 메소드가 호출되었습니다.');
+    final user = context.watch<AppState>().currentUser;
+    final group = context.watch<AppState>().selectedGroup;
+    
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text('메인 메뉴'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '안녕하세요, ${user?.nickname ?? ''}님',
+              style: AppTextStyles.title,
+            ),
+            Text(
+              group == UserGroup.bd ? 'BD 그룹' : 'STAFF 그룹',
+              style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: 32),
+            _MenuCard(
+              title: '연습 모드',
+              description: '무제한으로 문제를 풀어보세요',
+              icon: Icons.book_outlined,
+              color: AppColors.primary,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const PracticeScreen()),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+            _MenuCard(
+              title: '모의고사 모드',
+              description: '30문제를 시험처럼 풀어보세요',
+              icon: Icons.timer_outlined,
+              color: AppColors.secondary,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ExamScreen()),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+            _MenuCard(
+              title: '학습 이력',
+              description: '나의 학습 현황을 확인해보세요',
+              icon: Icons.history_outlined,
+              color: AppColors.textSecondary,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const HistoryScreen()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 메인 메뉴 카드 위젯
+class _MenuCard extends StatelessWidget {
+  final String title;
+  final String description;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _MenuCard({
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: color.withOpacity(0.1),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(icon, color: color, size: 32),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppTextStyles.heading.copyWith(color: color),
+                    ),
+                    Text(
+                      description,
+                      style: AppTextStyles.body.copyWith(
+                        color: color.withOpacity(0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right,
+                color: color.withOpacity(0.5),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 연습 모드 화면 위젯
+class PracticeScreen extends StatefulWidget {
+  const PracticeScreen({super.key});
+
+  @override
+  State<PracticeScreen> createState() => _PracticeScreenState();
+}
+
+class _PracticeScreenState extends State<PracticeScreen> {
+  late List<Question> _questions;
+  int _currentQuestionIndex = 0;
+  bool _showAnswer = false;
+
+  @override
+  void initState() {
+    super.initState();
+    print('PracticeScreen initState 호출');
+    _initializeQuestions();
+  }
+
+  /// 문제 초기화 메소드
+  void _initializeQuestions() {
+    print('문제 초기화');
+    final userGroup = context.read<AppState>().selectedGroup;
+    _questions = sampleQuestions.where((q) => q.group == userGroup).toList()
+      ..shuffle();
+    setState(() {});
+  }
+
+  /// 다음 문제로 이동하는 메소드
+  void _nextQuestion() {
+    print('다음 문제로 이동');
+    setState(() {
+      _showAnswer = false;
+      if (_currentQuestionIndex < _questions.length - 1) {
+        _currentQuestionIndex++;
+      }
+    });
+  }
+
+  /// 이전 문제로 이동하는 메소드
+  void _previousQuestion() {
+    print('이전 문제로 이동');
+    setState(() {
+      _showAnswer = false;
+      if (_currentQuestionIndex > 0) {
+        _currentQuestionIndex--;
+      }
+    });
+  }
+
+  /// 정답 확인 메소드
+  void _toggleAnswer() {
+    print('정답 확인: ${_showAnswer ? '숨기기' : '보기'}');
+    setState(() {
+      _showAnswer = !_showAnswer;
+    });
+  }
+
+  /// 문제 선택 처리 메소드
+  void _handleAnswer(int selectedAnswer) {
+    print('선택한 답안: $selectedAnswer');
+    final question = _questions[_currentQuestionIndex];
+    final isCorrect = selectedAnswer == question.correctAnswer;
+    
+    // 학습 이력 저장
+    context.read<AppState>().addHistory(
+      StudyHistory(
+        questionId: question.id,
+        isCorrect: isCorrect,
+        solvedDate: DateTime.now(),
+        isPracticeMode: true,
+      ),
+    );
+
+    setState(() {
+      _showAnswer = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('PracticeScreen build 메소드 호출');
+    
+    if (_questions.isEmpty) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final question = _questions[_currentQuestionIndex];
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text('연습 모드'),
+        actions: [
+          TextButton.icon(
+            onPressed: _toggleAnswer,
+            icon: Icon(
+              _showAnswer ? Icons.visibility_off : Icons.visibility,
+              color: AppColors.primary,
+            ),
+            label: Text(
+              _showAnswer ? '해설 숨기기' : '해설 보기',
+              style: TextStyle(color: AppColors.primary),
+            ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // 진행 상황 표시
+          LinearProgressIndicator(
+            value: (_currentQuestionIndex + 1) / _questions.length,
+            backgroundColor: AppColors.divider,
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 문제 번호
+                  Text(
+                    'Question ${_currentQuestionIndex + 1}/${_questions.length}',
+                    style: AppTextStyles.body.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // 문제 내용
+                  Text(
+                    question.question,
+                    style: AppTextStyles.heading,
+                  ),
+                  const SizedBox(height: 24),
+                  // 보기 목록
+                  ...List.generate(
+                    question.options.length,
+                    (index) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _AnswerOption(
+                        option: question.options[index],
+                        isSelected: _showAnswer && index == question.correctAnswer,
+                        onTap: () => _handleAnswer(index),
+                      ),
+                    ),
+                  ),
+                  if (_showAnswer) ...[
+                    const SizedBox(height: 24),
+                    // 해설
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '해설',
+                            style: AppTextStyles.heading.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            question.explanation,
+                            style: AppTextStyles.body,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+          // 이전/다음 버튼
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _currentQuestionIndex > 0 ? _previousQuestion : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.surface,
+                        foregroundColor: AppColors.primary,
+                      ),
+                      child: const Text('이전'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _currentQuestionIndex < _questions.length - 1
+                          ? _nextQuestion
+                          : null,
+                      child: const Text('다음'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 답안 선택 옵션 위젯
+class _AnswerOption extends StatelessWidget {
+  final String option;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _AnswerOption({
+    required this.option,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.primary.withOpacity(0.1)
+              : AppColors.surface,
+          border: Border.all(
+            color: isSelected
+                ? AppColors.primary
+                : AppColors.divider,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                option,
+                style: AppTextStyles.body.copyWith(
+                  color: isSelected
+                      ? AppColors.primary
+                      : AppColors.text,
+                ),
+              ),
+            ),
+            if (isSelected)
+              const Icon(
+                Icons.check_circle,
+                color: AppColors.primary,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 모의고사 모드 화면 위젯
+class ExamScreen extends StatefulWidget {
+  const ExamScreen({super.key});
+
+  @override
+  State<ExamScreen> createState() => _ExamScreenState();
+}
+
+class _ExamScreenState extends State<ExamScreen> {
+  static const int totalQuestions = 30;
+  static const int timeLimit = 45; // 45분
+
+  late List<Question> _questions;
+  int _currentQuestionIndex = 0;
+  late List<int?> _userAnswers;
+  int _remainingSeconds = timeLimit * 60;
+  Timer? _timer;
+  bool _isExamFinished = false;
+
+  @override
+  void initState() {
+    super.initState();
+    print('ExamScreen initState 호출');
+    _initializeExam();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  /// 시험 초기화 메소드
+  void _initializeExam() {
+    print('모의고사 초기화');
+    final userGroup = context.read<AppState>().selectedGroup;
+    final groupQuestions = sampleQuestions.where((q) => q.group == userGroup).toList()..shuffle();
+    _questions = groupQuestions.take(totalQuestions).toList();
+    _userAnswers = List.filled(totalQuestions, null);
+  }
+
+  /// 타이머 시작 메소드
+  void _startTimer() {
+    print('타이머 시작');
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_remainingSeconds > 0) {
+          _remainingSeconds--;
+        } else {
+          _finishExam();
+        }
+      });
+    });
+  }
+
+  /// 답안 선택 처리 메소드
+  void _handleAnswer(int selectedAnswer) {
+    print('선택한 답안: $selectedAnswer');
+    setState(() {
+      _userAnswers[_currentQuestionIndex] = selectedAnswer;
+    });
+  }
+
+  /// 다음 문제로 이동하는 메소드
+  void _nextQuestion() {
+    print('다음 문제로 이동');
+    setState(() {
+      if (_currentQuestionIndex < totalQuestions - 1) {
+        _currentQuestionIndex++;
+      }
+    });
+  }
+
+  /// 이전 문제로 이동하는 메소드
+  void _previousQuestion() {
+    print('이전 문제로 이동');
+    setState(() {
+      if (_currentQuestionIndex > 0) {
+        _currentQuestionIndex--;
+      }
+    });
+  }
+
+  /// 시험 종료 처리 메소드
+  void _finishExam() {
+    print('시험 종료');
+    _timer?.cancel();
+    setState(() {
+      _isExamFinished = true;
+    });
+
+    // 학습 이력 저장
+    for (var i = 0; i < _questions.length; i++) {
+      if (_userAnswers[i] != null) {
+        context.read<AppState>().addHistory(
+          StudyHistory(
+            questionId: _questions[i].id,
+            isCorrect: _userAnswers[i] == _questions[i].correctAnswer,
+            solvedDate: DateTime.now(),
+            isPracticeMode: false,
+          ),
+        );
+      }
+    }
+
+    // 결과 화면으로 이동
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => ExamResultScreen(
+          questions: _questions,
+          userAnswers: _userAnswers,
+          timeSpent: timeLimit * 60 - _remainingSeconds,
+        ),
+      ),
+    );
+  }
+
+  String get _formattedTime {
+    final minutes = _remainingSeconds ~/ 60;
+    final seconds = _remainingSeconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('ExamScreen build 메소드 호출');
+    
+    if (_questions.isEmpty) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final question = _questions[_currentQuestionIndex];
+    final userAnswer = _userAnswers[_currentQuestionIndex];
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text('모의고사 모드'),
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                _formattedTime,
+                style: AppTextStyles.heading.copyWith(
+                  color: _remainingSeconds < 300 // 5분 미만
+                      ? AppColors.error
+                      : AppColors.primary,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // 진행 상황 표시
+          LinearProgressIndicator(
+            value: (_currentQuestionIndex + 1) / totalQuestions,
+            backgroundColor: AppColors.divider,
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 문제 번호
+                  Text(
+                    'Question ${_currentQuestionIndex + 1}/$totalQuestions',
+                    style: AppTextStyles.body.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // 문제 내용
+                  Text(
+                    question.question,
+                    style: AppTextStyles.heading,
+                  ),
+                  const SizedBox(height: 24),
+                  // 보기 목록
+                  ...List.generate(
+                    question.options.length,
+                    (index) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _AnswerOption(
+                        option: question.options[index],
+                        isSelected: userAnswer == index,
+                        onTap: () => _handleAnswer(index),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // 이전/다음/제출 버튼
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _currentQuestionIndex > 0 ? _previousQuestion : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.surface,
+                        foregroundColor: AppColors.primary,
+                      ),
+                      child: const Text('이전'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  if (_currentQuestionIndex < totalQuestions - 1)
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _nextQuestion,
+                        child: const Text('다음'),
+                      ),
+                    )
+                  else
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _finishExam,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.secondary,
+                        ),
+                        child: const Text('제출하기'),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 모의고사 결과 화면 위젯
+class ExamResultScreen extends StatelessWidget {
+  final List<Question> questions;
+  final List<int?> userAnswers;
+  final int timeSpent;
+
+  const ExamResultScreen({
+    super.key,
+    required this.questions,
+    required this.userAnswers,
+    required this.timeSpent,
+  });
+
+  /// 점수 계산 메소드
+  int _calculateScore() {
+    print('점수 계산');
+    var correctCount = 0;
+    for (var i = 0; i < questions.length; i++) {
+      if (userAnswers[i] == questions[i].correctAnswer) {
+        correctCount++;
+      }
+    }
+    return (correctCount / questions.length * 100).round();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('ExamResultScreen build 메소드 호출');
+    
+    final score = _calculateScore();
+    final minutes = timeSpent ~/ 60;
+    final seconds = timeSpent % 60;
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text('모의고사 결과'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 점수 표시
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '당신의 점수',
+                        style: AppTextStyles.body.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '$score점',
+                        style: AppTextStyles.title.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '소요 시간',
+                        style: AppTextStyles.body.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '$minutes분 $seconds초',
+                        style: AppTextStyles.heading.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              '문제별 정답 확인',
+              style: AppTextStyles.heading,
+            ),
+            const SizedBox(height: 16),
+            // 문제별 결과 목록
+            ...List.generate(
+              questions.length,
+              (index) {
+                final question = questions[index];
+                final userAnswer = userAnswers[index];
+                final isCorrect = userAnswer == question.correctAnswer;
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isCorrect ? AppColors.primary : AppColors.error,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Question ${index + 1}',
+                            style: AppTextStyles.body.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(
+                            isCorrect
+                                ? Icons.check_circle
+                                : Icons.cancel,
+                            color: isCorrect
+                                ? AppColors.primary
+                                : AppColors.error,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        question.question,
+                        style: AppTextStyles.body,
+                      ),
+                      const SizedBox(height: 8),
+                      if (userAnswer != null) ...[
+                        Text(
+                          '선택한 답: ${question.options[userAnswer]}',
+                          style: AppTextStyles.body.copyWith(
+                            color: isCorrect
+                                ? AppColors.primary
+                                : AppColors.error,
+                          ),
+                        ),
+                      ],
+                      if (!isCorrect) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          '정답: ${question.options[question.correctAnswer]}',
+                          style: AppTextStyles.body.copyWith(
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 8),
+                      Text(
+                        question.explanation,
+                        style: AppTextStyles.body.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 학습 이력 화면 위젯
+class HistoryScreen extends StatelessWidget {
+  const HistoryScreen({super.key});
+
+  /// 정답률 계산 메소드
+  double _calculateAccuracy(List<StudyHistory> history) {
+    print('정답률 계산');
+    if (history.isEmpty) return 0;
+    final correctCount = history.where((h) => h.isCorrect).length;
+    return correctCount / history.length * 100;
+  }
+
+  /// 날짜별 학습 이력 그룹화 메소드
+  Map<String, List<StudyHistory>> _groupHistoryByDate(List<StudyHistory> history) {
+    print('날짜별 학습 이력 그룹화');
+    final grouped = <String, List<StudyHistory>>{};
+    for (final item in history) {
+      final date = _formatDate(item.solvedDate);
+      if (!grouped.containsKey(date)) {
+        grouped[date] = [];
+      }
+      grouped[date]!.add(item);
+    }
+    return grouped;
+  }
+
+  /// 날짜 포맷팅 메소드
+  String _formatDate(DateTime date) {
+    print('날짜 포맷팅: $date');
+    return '${date.year}년 ${date.month}월 ${date.day}일';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('HistoryScreen build 메소드 호출');
+    final history = context.watch<AppState>().history;
+    final accuracy = _calculateAccuracy(history);
+    final groupedHistory = _groupHistoryByDate(history);
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text('학습 이력'),
+      ),
+      body: Column(
+        children: [
+          // 통계 카드
+          Container(
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primary),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      '총 문제 수',
+                      style: AppTextStyles.body.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${history.length}문제',
+                      style: AppTextStyles.heading.copyWith(
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Text(
+                      '정답률',
+                      style: AppTextStyles.body.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${accuracy.toStringAsFixed(1)}%',
+                      style: AppTextStyles.heading.copyWith(
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          // 날짜별 학습 이력
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: groupedHistory.length,
+              itemBuilder: (context, index) {
+                final date = groupedHistory.keys.elementAt(index);
+                final items = groupedHistory[date]!;
+                final correctCount = items.where((item) => item.isCorrect).length;
+                
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      date,
+                      style: AppTextStyles.heading,
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '푼 문제',
+                                style: AppTextStyles.body.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                              Text(
+                                '${items.length}문제',
+                                style: AppTextStyles.body,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '정답',
+                                style: AppTextStyles.body.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                              Text(
+                                '$correctCount문제',
+                                style: AppTextStyles.body.copyWith(
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '오답',
+                                style: AppTextStyles.body.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                              Text(
+                                '${items.length - correctCount}문제',
+                                style: AppTextStyles.body.copyWith(
+                                  color: AppColors.error,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '정답률',
+                                style: AppTextStyles.body.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                              Text(
+                                '${(correctCount / items.length * 100).toStringAsFixed(1)}%',
+                                style: AppTextStyles.body.copyWith(
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+  
