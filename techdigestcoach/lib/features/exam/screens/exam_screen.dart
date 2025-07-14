@@ -19,6 +19,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../shared/models/question.dart';
 import '../../../shared/models/study_history.dart';
 import '../../../shared/models/sample_data.dart';
+import '../../../shared/models/user_group.dart';
 
 // Provider import
 import '../../../providers/app_state.dart';
@@ -123,7 +124,7 @@ class _ExamScreenState extends State<ExamScreen> {
       if (_userAnswers[i] != null) {
         context.read<AppState>().addHistory(
           StudyHistory(
-            group: _questions[i].group,
+            group: _questions[i].group == "bd" ? UserGroup.bd : UserGroup.staff,
             questionId: _questions[i].id,
             isCorrect: _userAnswers[i] == _questions[i].correctAnswer,
             solvedDate: DateTime.now(),

@@ -1,26 +1,20 @@
-/// 문제 데이터 모델
+/// 문제 모델
 /// 
-/// 이 파일은 문제와 관련된 데이터 구조를 정의합니다.
-/// 각 문제는 ID, 질문, 선택지, 정답, 해설, 그룹 정보를 포함합니다.
-/// 
-/// 작성자: 개발팀
-/// 작성일: 2024
-/// 버전: 1.0.0
-
-import "user_group.dart";
-
-/// 문제 데이터 모델
+/// 문제의 기본 정보를 담고 있는 모델입니다.
+/// id, 문제 내용, 보기, 정답, 해설 등을 포함합니다.
 class Question {
   final String id;
   final String question;
+  final String type;  // 추가된 필드
   final List<String> options;
   final int correctAnswer;
   final String explanation;
-  final UserGroup group;
+  final String group;
 
-  const Question({
+  Question({
     required this.id,
     required this.question,
+    required this.type,  // 추가된 필드
     required this.options,
     required this.correctAnswer,
     required this.explanation,
@@ -32,12 +26,11 @@ class Question {
     return Question(
       id: json["id"] as String,
       question: json["question"] as String,
+      type: json["type"] as String, // 추가된 필드
       options: List<String>.from(json["options"]),
       correctAnswer: json["correctAnswer"] as int,
       explanation: json["explanation"] as String,
-      group: UserGroup.values.firstWhere(
-        (e) => e.toString() == "UserGroup.${json["group"]}",
-      ),
+      group: json["group"] as String, // 변경된 필드
     );
   }
 
@@ -46,10 +39,11 @@ class Question {
     return {
       "id": id,
       "question": question,
+      "type": type, // 추가된 필드
       "options": options,
       "correctAnswer": correctAnswer,
       "explanation": explanation,
-      "group": group.toString().split(".").last,
+      "group": group, // 변경된 필드
     };
   }
 

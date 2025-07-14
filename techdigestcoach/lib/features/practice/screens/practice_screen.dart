@@ -18,6 +18,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../shared/models/question.dart';
 import '../../../shared/models/study_history.dart';
 import '../../../shared/models/sample_data.dart';
+import '../../../shared/models/user_group.dart';
 
 // Provider import
 import '../../../providers/app_state.dart';
@@ -90,7 +91,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
     // 학습 이력 저장
     context.read<AppState>().addHistory(
       StudyHistory(
-        group: question.group,
+        group: question.group == "bd" ? UserGroup.bd : UserGroup.staff,
         questionId: question.id,
         isCorrect: isCorrect,
         solvedDate: DateTime.now(),
