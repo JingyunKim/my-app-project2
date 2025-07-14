@@ -233,28 +233,27 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // 문제 카드 Q. 표기 개선
-                          Row(
-                            children: [
-                              Text(
-                                'Q${_currentQuestionIndex + 1}.',
-                                style: AppTextStyles.subtitle.copyWith(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Q${_currentQuestionIndex + 1}. ',
+                                  style: AppTextStyles.subtitle.copyWith(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            question.question,
-                            style: AppTextStyles.heading.copyWith(
-                              color: AppColors.text,
-                              fontSize: 18,
-                              height: 1.5,
+                                TextSpan(
+                                  text: question.question,
+                                  style: AppTextStyles.heading.copyWith(
+                                    color: AppColors.text,
+                                    fontSize: 18,
+                                    height: 1.5,
+                                  ),
+                                ),
+                              ],
                             ),
-                            maxLines: null,
-                            softWrap: true,
                           ),
                         ],
                       ),
@@ -443,7 +442,7 @@ class _AnswerOption extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             child: Row(
               children: [
                 // 선택 표시 원

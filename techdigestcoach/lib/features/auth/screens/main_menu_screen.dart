@@ -159,7 +159,6 @@ class MainMenuScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: AppColors.textSecondary),
           onPressed: () {
-            // 과목 선택 화면으로 이동
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const GroupSelectionScreen()),
             );
@@ -193,189 +192,155 @@ class MainMenuScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 사용자 정보 카드 (학습 이력 포함)
+                // 과목 표시
                 Container(
-                  padding: const EdgeInsets.all(24),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [primaryColor.withOpacity(0.1), secondaryColor.withOpacity(0.1)],
-                    ),
+                    color: primaryColor,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: primaryColor.withOpacity(0.2),
-                      width: 1,
+                  ),
+                  child: Text(
+                    group == UserGroup.bd ? 'BD 과목' : 'STAFF 과목',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.surface,
+                      fontWeight: FontWeight.w600,
                     ),
-                  ),
-                  child: Column(
-                    children: [
-                      // 과목 표시 (최상단)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: primaryColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            group == UserGroup.bd ? 'BD 과목' : 'STAFF 과목',
-                            style: AppTextStyles.caption.copyWith(
-                              color: AppColors.surface,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '안녕하세요, ${user?.nickname ?? ''}님',
-                                  style: AppTextStyles.heading.copyWith(
-                                    color: AppColors.text,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // 닉네임 변경 버튼 (카드 내부)
-                          IconButton(
-                            onPressed: () {
-                              _showNicknameChangeDialog(context);
-                            },
-                            icon: Icon(
-                              Icons.edit_outlined,
-                              color: AppColors.textSecondary.withOpacity(0.6),
-                              size: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      // 학습 이력 요약
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.surface.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            color: accentColor.withOpacity(0.3),
-                            width: 1,
-                          ),
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) => const HistoryScreen()),
-                              );
-                            },
-                            borderRadius: BorderRadius.circular(15),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [accentColor, accentColor.withOpacity(0.7)],
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: const Icon(
-                                      Icons.history_outlined,
-                                      color: AppColors.surface,
-                                      size: 20,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '학습 이력',
-                                          style: AppTextStyles.subtitle.copyWith(
-                                            color: accentColor,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          '나의 학습 현황을 확인해보세요',
-                                          style: AppTextStyles.caption.copyWith(
-                                            color: AppColors.textLight,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: accentColor.withOpacity(0.6),
-                                    size: 16,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  '학습 모드 선택',
-                  style: AppTextStyles.heading.copyWith(
-                    color: AppColors.text,
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 16),
-                // 학습 모드 카드들을 Flexible로 배치
-                Flexible(
-                  child: Column(
-                    children: [
-                      // 연습 모드 카드
-                      Flexible(
-                        flex: 1,
-                        child: _MenuCard(
-                          title: '연습 모드',
-                          subtitle: '무제한 학습',
-                          description: '시간 제한 없이 문제를 풀어보세요',
-                          icon: Icons.book_outlined,
-                          color: primaryColor,
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => const PracticeScreen()),
-                            );
-                          },
+                // 환영 메시지
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${user?.nickname ?? ''}님,\n학습을 시작해볼까요?',
+                        style: AppTextStyles.heading.copyWith(
+                          color: AppColors.text,
+                          fontSize: 24,
+                          height: 1.3,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      // 모의고사 모드 카드
-                      Flexible(
-                        flex: 1,
-                        child: _MenuCard(
-                          title: '모의고사 모드',
-                          subtitle: '실제 시험 환경',
-                          description: '30문제를 45분 안에 풀어보세요',
-                          icon: Icons.timer_outlined,
-                          color: secondaryColor,
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => const ExamScreen()),
-                            );
-                          },
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.edit_outlined,
+                        color: AppColors.textSecondary,
+                        size: 20,
+                      ),
+                      onPressed: () => _showNicknameChangeDialog(context),
+                      padding: const EdgeInsets.all(4),
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 32),
+                // 학습 모드 섹션
+                Text(
+                  '학습 모드',
+                  style: AppTextStyles.heading.copyWith(
+                    color: primaryColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '원하시는 학습 모드를 선택해주세요.',
+                  style: AppTextStyles.subtitle.copyWith(
+                    color: AppColors.textSecondary,
+                    height: 1.6,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // 학습 모드 선택 버튼들
+                Expanded(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        flex: 10,
+                        child: Column(
+                          children: [
+                            // 연습 모드 버튼
+                            Expanded(
+                              child: _MenuButton(
+                                title: '연습 모드',
+                                subtitle: '원하는 만큼 천천히 학습하세요',
+                                features: '해설 제공 · 진도 저장',
+                                icon: Icons.edit_note_outlined,
+                                color: primaryColor,
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (_) => const PracticeScreen()),
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            // 모의고사 모드 버튼
+                            Expanded(
+                              child: _MenuButton(
+                                title: '모의고사 모드',
+                                subtitle: '실전과 동일한 환경에서 테스트하세요',
+                                features: '20분 · 10문항 · 성적 분석',
+                                icon: Icons.timer_outlined,
+                                color: secondaryColor,
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (_) => const ExamScreen()),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // 학습 관리 섹션
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            top: BorderSide(
+                              color: AppColors.border,
+                              width: 1,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: _ManagementButton(
+                                title: '학습 이력',
+                                icon: Icons.history_outlined,
+                                color: accentColor,
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (_) => const HistoryScreen()),
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _ManagementButton(
+                                title: '틀린 문제',
+                                icon: Icons.refresh_outlined,
+                                color: accent2Color,
+                                onTap: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('준비 중인 기능입니다.'),
+                                      backgroundColor: AppColors.warning,
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -390,19 +355,19 @@ class MainMenuScreen extends StatelessWidget {
   }
 }
 
-/// 메인 메뉴 카드 위젯
-class _MenuCard extends StatelessWidget {
+/// 학습 모드 메뉴 버튼 위젯
+class _MenuButton extends StatelessWidget {
   final String title;
   final String subtitle;
-  final String description;
+  final String features;
   final IconData icon;
   final Color color;
   final VoidCallback onTap;
 
-  const _MenuCard({
+  const _MenuButton({
     required this.title,
     required this.subtitle,
-    required this.description,
+    required this.features,
     required this.icon,
     required this.color,
     required this.onTap,
@@ -412,17 +377,20 @@ class _MenuCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: color.withOpacity(0.2),
-          width: 1,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            color,
+            color.withOpacity(0.8),
+          ],
         ),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.1),
+            color: color.withOpacity(0.3),
             blurRadius: 15,
-            offset: const Offset(0, 5),
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -432,71 +400,127 @@ class _MenuCard extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 아이콘 영역
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [color, color.withOpacity(0.7)],
+                Row(
+                  children: [
+                    Icon(
+                      icon,
+                      color: AppColors.surface,
+                      size: 28,
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: AppColors.surface,
-                    size: 24,
+                    const SizedBox(width: 16),
+                    Text(
+                      title,
+                      style: AppTextStyles.heading.copyWith(
+                        color: AppColors.surface,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: Text(
+                    subtitle,
+                    style: AppTextStyles.body.copyWith(
+                      color: AppColors.surface,
+                      fontSize: 16,
+                      height: 1.4,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 16),
-                // 텍스트 영역
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                Container(
+                  padding: const EdgeInsets.only(top: 12),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        color: AppColors.surface.withOpacity(0.2),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: Row(
                     children: [
-                      Text(
-                        title,
-                        style: AppTextStyles.heading.copyWith(
-                          color: color,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18,
+                      Expanded(
+                        child: Text(
+                          features,
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.surface.withOpacity(0.9),
+                            fontSize: 14,
+                            height: 1.3,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        subtitle,
-                        style: AppTextStyles.subtitle.copyWith(
-                          color: AppColors.textSecondary,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        description,
-                        style: AppTextStyles.body.copyWith(
-                          color: AppColors.textLight,
-                          height: 1.3,
-                          fontSize: 12,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      Icon(
+                        Icons.arrow_forward,
+                        color: AppColors.surface.withOpacity(0.7),
+                        size: 20,
                       ),
                     ],
                   ),
                 ),
-                // 화살표 아이콘
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: color.withOpacity(0.6),
-                  size: 16,
-                ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+} 
+
+/// 학습 관리 버튼 위젯
+class _ManagementButton extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ManagementButton({
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: color.withOpacity(0.3),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: color,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: AppTextStyles.button.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ),
       ),
