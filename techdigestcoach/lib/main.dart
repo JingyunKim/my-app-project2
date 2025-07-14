@@ -9,7 +9,6 @@
 
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
-import "package:google_fonts/google_fonts.dart";
 
 // 스타일 import
 import "core/theme/app_colors.dart";
@@ -44,7 +43,7 @@ class MyApp extends StatelessWidget {
       title: "TechDigestCoach",
       theme: ThemeData(
         useMaterial3: true,
-        fontFamily: GoogleFonts.inter().fontFamily,
+        fontFamily: 'BMDOHYEON', // 배민도현체를 기본 폰트로 설정
         colorScheme: ColorScheme.light(
           primary: AppColors.primary,
           secondary: AppColors.secondary,
@@ -57,16 +56,29 @@ class MyApp extends StatelessWidget {
           foregroundColor: AppColors.text,
           elevation: 0,
           centerTitle: true,
-          titleTextStyle: GoogleFonts.inter(
+          titleTextStyle: const TextStyle(
+            fontFamily: 'BMDOHYEON',
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: AppColors.text,
           ),
         ),
-        textTheme: TextTheme(
-          displayLarge: AppTextStyles.title,
-          headlineMedium: AppTextStyles.heading,
-          bodyLarge: AppTextStyles.body,
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(fontFamily: 'BMDOHYEON'),
+          displayMedium: TextStyle(fontFamily: 'BMDOHYEON'),
+          displaySmall: TextStyle(fontFamily: 'BMDOHYEON'),
+          headlineLarge: TextStyle(fontFamily: 'BMDOHYEON'),
+          headlineMedium: TextStyle(fontFamily: 'BMDOHYEON'),
+          headlineSmall: TextStyle(fontFamily: 'BMDOHYEON'),
+          titleLarge: TextStyle(fontFamily: 'BMDOHYEON'),
+          titleMedium: TextStyle(fontFamily: 'BMDOHYEON'),
+          titleSmall: TextStyle(fontFamily: 'BMDOHYEON'),
+          bodyLarge: TextStyle(fontFamily: 'BMDOHYEON'),
+          bodyMedium: TextStyle(fontFamily: 'BMDOHYEON'),
+          bodySmall: TextStyle(fontFamily: 'BMDOHYEON'),
+          labelLarge: TextStyle(fontFamily: 'BMDOHYEON'),
+          labelMedium: TextStyle(fontFamily: 'BMDOHYEON'),
+          labelSmall: TextStyle(fontFamily: 'BMDOHYEON'),
         ),
       ),
       home: const SplashScreen(),

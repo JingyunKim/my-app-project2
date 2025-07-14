@@ -9,6 +9,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 // 스타일 import
 import '../../../core/theme/app_colors.dart';
@@ -99,17 +100,36 @@ class HistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('HistoryScreen build 메소드 호출');
-    final history = context.watch<AppState>().studyHistory;
+    final selectedGroup = context.watch<AppState>().selectedGroup;
+    final history = context.watch<AppState>().studyHistory.where((h) => h.group == selectedGroup).toList();
     final accuracy = _calculateAccuracy(history);
-    final groupStats = _calculateGroupStats(history);
-    final examScores = _calculateExamScores(history);
-    final groupedHistory = _groupHistoryByDate(history ?? []);
+    final examHistories = history.where((h) => !h.isPracticeMode).toList();
+    final groupedHistory = _groupHistoryByDate(history);
+
+    // 모의고사 점수 리스트 (응시별 총점)
+    List<double> examScores = [];
+    Map<String, List<StudyHistory>> examGroups = {};
+    for (final h in examHistories) {
+      final date = _formatDate(h.solvedDate);
+      examGroups.putIfAbsent(date, () => []);
+      examGroups[date]!.add(h);
+    }
+    for (final entry in examGroups.entries) {
+      final total = entry.value.length;
+      final correct = entry.value.where((h) => h.isCorrect).length;
+      examScores.add(total == 0 ? 0 : correct / total * 100);
+    }
+    // fl_chart용 데이터 변환
+    final List<FlSpot> scoreSpots = [
+      for (int i = 0; i < examScores.length; i++)
+        FlSpot(i.toDouble() + 1, examScores[i])
+    ];
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
-          '학습 이력',
+          selectedGroup == UserGroup.bd ? 'BD 학습 이력' : 'STAFF 학습 이력',
           style: AppTextStyles.heading.copyWith(
             color: AppColors.text,
             fontWeight: FontWeight.w600,
@@ -135,7 +155,7 @@ class HistoryScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // 통계 카드
+            // 내 과목 통계 카드
             Container(
               margin: const EdgeInsets.all(24),
               padding: const EdgeInsets.all(24),
@@ -172,7 +192,7 @@ class HistoryScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 16),
                       Text(
-                        '전체 통계',
+                        selectedGroup == UserGroup.bd ? 'BD 과목 통계' : 'STAFF 과목 통계',
                         style: AppTextStyles.heading.copyWith(
                           color: AppColors.text,
                           fontWeight: FontWeight.w700,
@@ -181,233 +201,98 @@ class HistoryScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 24),
-                  // 전체 통계
                   Row(
                     children: [
                       Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: AppColors.primary.withOpacity(0.2),
-                              width: 1,
+                        child: Column(
+                          children: [
+                            Text(
+                              '${history.length}',
+                              style: AppTextStyles.title.copyWith(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 24,
+                              ),
                             ),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                '${history.length}',
-                                style: AppTextStyles.title.copyWith(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 24,
-                                ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '총 문제 수',
+                              style: AppTextStyles.caption.copyWith(
+                                color: AppColors.textSecondary,
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '총 문제 수',
-                                style: AppTextStyles.caption.copyWith(
-                                  color: AppColors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: AppColors.success.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: AppColors.success.withOpacity(0.2),
-                              width: 1,
+                        child: Column(
+                          children: [
+                            Text(
+                              '${accuracy.toStringAsFixed(1)}%',
+                              style: AppTextStyles.title.copyWith(
+                                color: AppColors.success,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 24,
+                              ),
                             ),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                '${accuracy.toStringAsFixed(1)}%',
-                                style: AppTextStyles.title.copyWith(
-                                  color: AppColors.success,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 24,
-                                ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '정답률',
+                              style: AppTextStyles.caption.copyWith(
+                                color: AppColors.textSecondary,
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '정답률',
-                                style: AppTextStyles.caption.copyWith(
-                                  color: AppColors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  // 과목별 통계
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: AppColors.primary.withOpacity(0.2),
-                              width: 1,
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                'BD 과목',
-                                style: AppTextStyles.subtitle.copyWith(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                '${groupStats['bd']['total']}문제',
-                                style: AppTextStyles.body.copyWith(
-                                  color: AppColors.text,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                '${groupStats['bd']['accuracy'].toStringAsFixed(1)}%',
-                                style: AppTextStyles.caption.copyWith(
-                                  color: AppColors.textSecondary,
-                                ),
-                              ),
-                            ],
+                  // 모의고사 점수 변화 그래프
+                  if (scoreSpots.isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '모의고사 점수 변화',
+                          style: AppTextStyles.subtitle.copyWith(
+                            color: AppColors.accent,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: AppColors.staffPrimary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: AppColors.staffPrimary.withOpacity(0.2),
-                              width: 1,
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 160,
+                          child: LineChart(
+                            LineChartData(
+                              minY: 0,
+                              maxY: 100,
+                              titlesData: FlTitlesData(
+                                leftTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: true, reservedSize: 32),
+                                ),
+                                bottomTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: true, reservedSize: 24),
+                                ),
+                                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                              ),
+                              gridData: FlGridData(show: true),
+                              borderData: FlBorderData(show: true),
+                              lineBarsData: [
+                                LineChartBarData(
+                                  spots: scoreSpots,
+                                  isCurved: true,
+                                  color: AppColors.accent,
+                                  barWidth: 3,
+                                  dotData: FlDotData(show: true),
+                                ),
+                              ],
                             ),
                           ),
-                          child: Column(
-                            children: [
-                              Text(
-                                'STAFF 과목',
-                                style: AppTextStyles.subtitle.copyWith(
-                                  color: AppColors.staffPrimary,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                '${groupStats['staff']['total']}문제',
-                                style: AppTextStyles.body.copyWith(
-                                  color: AppColors.text,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                '${groupStats['staff']['accuracy'].toStringAsFixed(1)}%',
-                                style: AppTextStyles.caption.copyWith(
-                                  color: AppColors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  // 모의고사 점수
-                  if ((examScores['bd']?.isNotEmpty ?? false) || (examScores['staff']?.isNotEmpty ?? false))
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppColors.accent.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: AppColors.accent.withOpacity(0.2),
-                          width: 1,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '모의고사 점수',
-                            style: AppTextStyles.subtitle.copyWith(
-                              color: AppColors.accent,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              if (examScores['bd']?.isNotEmpty ?? false)
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        'BD 과목',
-                                        style: AppTextStyles.caption.copyWith(
-                                          color: AppColors.textSecondary,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        '${(examScores['bd'] ?? []).isNotEmpty ? examScores['bd']!.reduce((a, b) => a + b).toStringAsFixed(1) : '0.0'}점',
-                                        style: AppTextStyles.body.copyWith(
-                                          color: AppColors.text,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              if ((examScores['bd']?.isNotEmpty ?? false) && (examScores['staff']?.isNotEmpty ?? false))
-                                const SizedBox(width: 20),
-                              if (examScores['staff']?.isNotEmpty ?? false)
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        'STAFF 과목',
-                                        style: AppTextStyles.caption.copyWith(
-                                          color: AppColors.textSecondary,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        '${(examScores['staff'] ?? []).isNotEmpty ? examScores['staff']!.reduce((a, b) => a + b).toStringAsFixed(1) : '0.0'}점',
-                                        style: AppTextStyles.body.copyWith(
-                                          color: AppColors.text,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
                 ],
               ),
@@ -422,7 +307,6 @@ class HistoryScreen extends StatelessWidget {
                   final items = groupedHistory[date]!;
                   final correctCount = items.where((item) => item.isCorrect).length;
                   final accuracy = (correctCount / items.length * 100).toStringAsFixed(1);
-                  
                   return Container(
                     margin: const EdgeInsets.only(bottom: 16),
                     padding: const EdgeInsets.all(20),

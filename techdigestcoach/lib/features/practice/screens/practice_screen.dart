@@ -213,56 +213,45 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   children: [
                     // 문제 카드
                     Container(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: AppColors.surface,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: AppColors.border,
+                          color: AppColors.primary.withOpacity(0.12),
                           width: 1,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.text.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 2),
+                            color: AppColors.primary.withOpacity(0.06),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // 문제 카드 Q. 표기 개선
                           Row(
                             children: [
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Icon(
-                                  Icons.quiz_outlined,
-                                  color: AppColors.primary,
-                                  size: 20,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
                               Text(
-                                'Question ${_currentQuestionIndex + 1}',
-                                style: AppTextStyles.caption.copyWith(
-                                  color: AppColors.textSecondary,
-                                  fontWeight: FontWeight.w600,
+                                'Q${_currentQuestionIndex + 1}.',
+                                style: AppTextStyles.subtitle.copyWith(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 10),
                           Text(
                             question.question,
                             style: AppTextStyles.heading.copyWith(
                               color: AppColors.text,
-                              height: 1.4,
                               fontSize: 18,
+                              height: 1.5,
                             ),
                             maxLines: null,
                             softWrap: true,
@@ -330,6 +319,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 color: AppColors.text,
                                 height: 1.5,
                               ),
+                              maxLines: null,
+                              softWrap: true,
                             ),
                           ],
                         ),
@@ -339,7 +330,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 ),
               ),
             ),
-            // 이전/다음 버튼
+            // 하단 버튼 영역 개선
             SafeArea(
               child: Container(
                 padding: const EdgeInsets.all(24),
@@ -354,17 +345,17 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 ),
                 child: Row(
                   children: [
+                    // 이전 버튼 제거
+                    // 연습모드 종료 버튼 추가
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _currentQuestionIndex > 0 ? _previousQuestion : null,
+                        onPressed: () {
+                          Navigator.of(context).pop(); // 메인 메뉴 등으로 이동
+                        },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.surface,
-                          foregroundColor: AppColors.primary,
+                          backgroundColor: AppColors.error,
+                          foregroundColor: AppColors.surface,
                           elevation: 0,
-                          side: BorderSide(
-                            color: AppColors.primary.withOpacity(0.3),
-                            width: 1,
-                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -373,9 +364,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.arrow_back_ios, size: 16),
+                            Icon(Icons.exit_to_app, size: 16),
                             const SizedBox(width: 8),
-                            Text('이전', style: AppTextStyles.button.copyWith(color: AppColors.primary)),
+                            Text('연습모드 종료', style: AppTextStyles.button),
                           ],
                         ),
                       ),

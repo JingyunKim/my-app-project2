@@ -17,15 +17,15 @@ class AppColors {
   static const Color accent = Color(0xFF60A5FA);       // 파스텔 밝은 파란색
   static const Color accent2 = Color(0xFF93C5FD);      // 파스텔 연한 파란색
   
-  // STAFF 과목용 파스텔 주황색 계열 컬러
-  static const Color staffPrimary = Color(0xFFF97316);    // 파스텔 주황색
-  static const Color staffSecondary = Color(0xFFEA580C);  // 파스텔 진한 주황색
-  static const Color staffAccent = Color(0xFFFB923C);     // 파스텔 밝은 주황색
-  static const Color staffAccent2 = Color(0xFFFDBA74);    // 파스텔 연한 주황색
+  // STAFF 과목용 파스텔 초록색 계열 컬러
+  static const Color staffPrimary = Color(0xFF10B981);    // 파스텔 초록색
+  static const Color staffSecondary = Color(0xFF059669);  // 파스텔 진한 초록색
+  static const Color staffAccent = Color(0xFF34D399);     // 파스텔 밝은 초록색
+  static const Color staffAccent2 = Color(0xFF6EE7B7);    // 파스텔 연한 초록색
   
   // 배경 및 표면 색상 (회색 계열)
-  static const Color background = Color(0xFFF8FAFC);   // 연한 회색
-  static const Color surface = Color(0xFFFFFFFF);      // 화이트
+  static const Color background = Color(0xFFECEFF4);   // 조금 더 짙은 연회색
+  static const Color surface = Color(0xFFF3F4F8);      // 살짝 더 진한 회색
   static const Color cardBackground = Color(0xFFF1F5F9); // 연한 회색
   
   // 텍스트 색상 (회색 계열)
