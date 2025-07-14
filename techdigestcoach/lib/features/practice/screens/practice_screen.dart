@@ -47,8 +47,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
   void _initializeQuestions() {
     print('문제 초기화');
     final userGroup = context.read<AppState>().selectedGroup;
-    _questions = sampleQuestions.where((q) => q.group == userGroup).toList()
-      ..shuffle();
+    _questions = sampleQuestions.where((q) => 
+      (userGroup == UserGroup.bd && q.group == "bd") || 
+      (userGroup == UserGroup.staff && q.group == "staff")
+    ).toList()..shuffle();
     setState(() {});
   }
 

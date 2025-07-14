@@ -64,7 +64,10 @@ class _ExamScreenState extends State<ExamScreen> {
   void _initializeExam() {
     print('모의고사 초기화');
     final userGroup = context.read<AppState>().selectedGroup;
-    final groupQuestions = sampleQuestions.where((q) => q.group == userGroup).toList()..shuffle();
+    final groupQuestions = sampleQuestions.where((q) => 
+      (userGroup == UserGroup.bd && q.group == "bd") || 
+      (userGroup == UserGroup.staff && q.group == "staff")
+    ).toList()..shuffle();
     _questions = groupQuestions.take(totalQuestions).toList();
     _userAnswers = List.filled(totalQuestions, null);
   }
