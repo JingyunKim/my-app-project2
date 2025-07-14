@@ -7,9 +7,12 @@
 /// 버전: 1.0.0
 
 import "package:flutter/material.dart";
+import "package:provider/provider.dart";
 import "../../../core/theme/app_colors.dart";
 import "../../../core/theme/app_text_styles.dart";
+import "../../../providers/app_state.dart";
 import "nickname_screen.dart";
+import "main_menu_screen.dart";
 
 /// 스플래시 화면 위젯
 class SplashScreen extends StatefulWidget {
@@ -29,12 +32,23 @@ class _SplashScreenState extends State<SplashScreen> {
 
   /// 다음 화면으로 자동 전환하는 메소드
   Future<void> _navigateToNextScreen() async {
-    print("3초 후 닉네임 입력 화면으로 전환합니다.");
+    print("3초 후 다음 화면으로 전환합니다.");
     await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const NicknameScreen()),
-      );
+      final appState = context.read<AppState>();
+      final user = appState.currentUser;
+      
+      if (user != null) {
+        // 이미 로그인된 경우 메인 메뉴로 이동
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const MainMenuScreen()),
+        );
+      } else {
+        // 로그인이 필요한 경우 닉네임 입력 화면으로 이동
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const NicknameScreen()),
+        );
+      }
     }
   }
 

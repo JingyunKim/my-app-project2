@@ -36,8 +36,8 @@ class ExamScreen extends StatefulWidget {
 }
 
 class _ExamScreenState extends State<ExamScreen> {
-  static const int totalQuestions = 30;
-  static const int timeLimit = 45; // 45분
+  static const int totalQuestions = 10;
+  static const int timeLimit = 20; // 20분
 
   late List<Question> _questions;
   int _currentQuestionIndex = 0;

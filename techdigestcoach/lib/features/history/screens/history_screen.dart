@@ -297,6 +297,133 @@ class HistoryScreen extends StatelessWidget {
                 ],
               ),
             ),
+            // 모의고사 응시 이력 섹션
+            if (examGroups.isNotEmpty)
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: AppColors.accent.withOpacity(0.2),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.text.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.accent.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.quiz_outlined,
+                            color: AppColors.accent,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          '모의고사 응시 이력',
+                          style: AppTextStyles.subtitle.copyWith(
+                            color: AppColors.text,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    // 모의고사 응시 이력 테이블
+                    ...examGroups.entries.map((entry) {
+                      final date = entry.key;
+                      final examItems = entry.value;
+                      final correctCount = examItems.where((item) => item.isCorrect).length;
+                      final accuracy = (correctCount / examItems.length * 100).toStringAsFixed(1);
+                      final examNumber = examGroups.keys.toList().indexOf(date) + 1;
+                      
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.background,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: AppColors.border,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            // 응시 횟수
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: AppColors.accent,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '$examNumber',
+                                  style: AppTextStyles.subtitle.copyWith(
+                                    color: AppColors.surface,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            // 날짜
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                date,
+                                style: AppTextStyles.body.copyWith(
+                                  color: AppColors.text,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            // 점수
+                            Expanded(
+                              child: Text(
+                                '$accuracy점',
+                                style: AppTextStyles.subtitle.copyWith(
+                                  color: AppColors.accent,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            // 정답/오답
+                            Expanded(
+                              child: Text(
+                                '$correctCount/${examItems.length}',
+                                style: AppTextStyles.body.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ],
+                ),
+              ),
             // 날짜별 학습 이력
             Expanded(
               child: ListView.builder(
