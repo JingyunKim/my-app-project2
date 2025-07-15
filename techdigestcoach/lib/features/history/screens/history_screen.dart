@@ -10,6 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -40,15 +41,15 @@ class HistoryScreen extends StatelessWidget {
         .map((h) => h.question!)
         .toList();
 
-    // 모의고사 이력을 날짜별로 그룹화
-    final examGroups = <String, List<StudyHistory>>{};
+    // 모의고사 이력을 회차별로 그룹화
+    final examGroups = <int, List<StudyHistory>>{};
     for (final history in examHistory) {
-      if (history.question != null) {
-        final date = _formatDate(history.solvedDate);
-        if (!examGroups.containsKey(date)) {
-          examGroups[date] = [];
+      if (history.question != null && history.examRound != null) {
+        final round = history.examRound!;
+        if (!examGroups.containsKey(round)) {
+          examGroups[round] = [];
         }
-        examGroups[date]!.add(history);
+        examGroups[round]!.add(history);
       }
     }
 
@@ -63,12 +64,13 @@ class HistoryScreen extends StatelessWidget {
           .toList();
       
       return ExamRecord(
-        date: entry.key,
-        round: examGroups.keys.toList().indexOf(entry.key) + 1,
+        date: _formatDate(examQuestions.first.solvedDate),
+        round: entry.key,
         score: score,
         wrongQuestions: wrongQuestions,
       );
-    }).toList();
+    }).toList()
+      ..sort((a, b) => a.round.compareTo(b.round)); // 회차 순으로 정렬
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -262,42 +264,96 @@ class HistoryScreen extends StatelessWidget {
               ),
             )
           else
-            Table(
-              columnWidths: const {
-                0: FlexColumnWidth(1), // 회차
-                1: FlexColumnWidth(1), // 점수
-                2: FlexColumnWidth(2), // 틀린 문제 보기 버튼
-              },
+            Column(
               children: [
-                // 테이블 헤더
-                TableRow(
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  children: [
-                    _buildTableHeader('회차'),
-                    _buildTableHeader('점수'),
-                    _buildTableHeader('틀린 문제'),
-                  ],
-                ),
-                // 모의고사 이력 데이터
-                ...examRecords.map((record) => _buildTableRow(
-                  context: context,
-                  round: record.round.toString(),
-                  score: '${record.score}',
-                  onPressed: record.wrongQuestions.isEmpty ? null : () {
-                    print('${record.round}회차 틀린 문제 보기 버튼이 클릭되었습니다.');
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => WrongAnswersScreen(
-                          wrongQuestions: record.wrongQuestions,
-                          title: '${record.round}회차 틀린 문제',
+                // 선 그래프
+                SizedBox(
+                  height: 200,
+                  child: LineChart(
+                    LineChartData(
+                      gridData: FlGridData(show: false),
+                      titlesData: FlTitlesData(
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            reservedSize: 40, // 30에서 40으로 증가
+                            interval: 20,
+                            showTitles: true,
+                          ),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            reservedSize: 30,
+                            interval: 1,
+                            showTitles: true,
+                          ),
+                        ),
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        topTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
                         ),
                       ),
-                    );
+                      borderData: FlBorderData(show: false),
+                      minY: 0,
+                      maxY: 100,
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: examRecords.map((record) => FlSpot(record.round.toDouble(), record.score.toDouble())).toList(),
+                          isCurved: true,
+                          color: AppColors.primary,
+                          barWidth: 5,
+                          isStrokeCapRound: true,
+                          dotData: FlDotData(show: true),
+                          belowBarData: BarAreaData(
+                            show: true,
+                            color: AppColors.primary.withOpacity(0.1),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // 테이블
+                Table(
+                  columnWidths: const {
+                    0: FlexColumnWidth(1), // 회차
+                    1: FlexColumnWidth(1.5), // 점수 (너비 증가)
+                    2: FlexColumnWidth(2), // 틀린 문제 보기 버튼
                   },
-                )),
+                  children: [
+                    // 테이블 헤더
+                    TableRow(
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      children: [
+                        _buildTableHeader('회차'),
+                        _buildTableHeader('점수'),
+                        _buildTableHeader('틀린 문제'),
+                      ],
+                    ),
+                    // 모의고사 이력 데이터
+                    ...examRecords.map((record) => _buildTableRow(
+                      context: context,
+                      round: '${record.round}회',
+                      score: '${record.score}/100',
+                      onPressed: record.wrongQuestions.isEmpty ? null : () {
+                        print('${record.round}회차 틀린 문제 보기 버튼이 클릭되었습니다.');
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => WrongAnswersScreen(
+                              wrongQuestions: record.wrongQuestions,
+                              title: '${record.round}회차 틀린 문제',
+                            ),
+                          ),
+                        );
+                      },
+                    )),
+                  ],
+                ),
               ],
             ),
         ],

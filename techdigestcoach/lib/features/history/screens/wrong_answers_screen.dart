@@ -325,9 +325,14 @@ class _WrongAnswersScreenState extends State<WrongAnswersScreen> {
                     // 다음 버튼
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _currentIndex < widget.wrongQuestions.length - 1 ? _nextQuestion : null,
+                        onPressed: _currentIndex < widget.wrongQuestions.length - 1 ? _nextQuestion : () {
+                          // 마지막 문제에서는 다시 풀기 종료
+                          Navigator.of(context).pop();
+                        },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: _currentIndex < widget.wrongQuestions.length - 1 
+                              ? AppColors.primary 
+                              : AppColors.error,
                           foregroundColor: AppColors.surface,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -338,9 +343,17 @@ class _WrongAnswersScreenState extends State<WrongAnswersScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('다음', style: AppTextStyles.button),
+                            Text(
+                              _currentIndex < widget.wrongQuestions.length - 1 ? '다음' : '다시 풀기 종료',
+                              style: AppTextStyles.button,
+                            ),
                             const SizedBox(width: 8),
-                            Icon(Icons.arrow_forward_ios, size: 16),
+                            Icon(
+                              _currentIndex < widget.wrongQuestions.length - 1 
+                                  ? Icons.arrow_forward_ios 
+                                  : Icons.check,
+                              size: 16,
+                            ),
                           ],
                         ),
                       ),

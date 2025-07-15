@@ -122,21 +122,23 @@ class _ExamScreenState extends State<ExamScreen> {
       _isExamFinished = true;
     });
 
-    // 학습 이력 저장
+    // 모의고사 이력 생성
+    final List<StudyHistory> examHistories = [];
     for (var i = 0; i < _questions.length; i++) {
       if (_userAnswers[i] != null) {
-        context.read<AppState>().addHistory(
-          StudyHistory(
-            id: 'exam_${DateTime.now().millisecondsSinceEpoch}_$i',
-            question: _questions[i],
-            group: (_questions[i].group == "bd" ? UserGroup.bd : UserGroup.staff).toString(),
-            isCorrect: _userAnswers[i] == _questions[i].correctAnswer,
-            solvedDate: DateTime.now(),
-            isPracticeMode: false,
-          ),
-        );
+        examHistories.add(StudyHistory(
+          id: 'exam_${DateTime.now().millisecondsSinceEpoch}_$i',
+          question: _questions[i],
+          group: (_questions[i].group == "bd" ? UserGroup.bd : UserGroup.staff).toString(),
+          isCorrect: _userAnswers[i] == _questions[i].correctAnswer,
+          solvedDate: DateTime.now(),
+          isPracticeMode: false,
+        ));
       }
     }
+
+    // 모의고사 완료 처리 (회차 정보 포함)
+    context.read<AppState>().completeExam(examHistories);
 
     // 결과 화면으로 이동
     Navigator.of(context).pushReplacement(
@@ -207,10 +209,7 @@ class _ExamScreenState extends State<ExamScreen> {
         ),
         backgroundColor: AppColors.surface,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.text),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        automaticallyImplyLeading: false, // 뒤로가기 버튼 제거
         actions: [
           // 타이머 표시
           Container(
@@ -432,9 +431,11 @@ class _ExamScreenState extends State<ExamScreen> {
                     if (_currentQuestionIndex < totalQuestions - 1)
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: _nextQuestion,
+                          onPressed: _userAnswers[_currentQuestionIndex] != null ? _nextQuestion : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.secondary,
+                            backgroundColor: _userAnswers[_currentQuestionIndex] != null 
+                                ? AppColors.secondary 
+                                : AppColors.secondary.withOpacity(0.3),
                             foregroundColor: AppColors.surface,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
@@ -455,9 +456,11 @@ class _ExamScreenState extends State<ExamScreen> {
                     else
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: _finishExam,
+                          onPressed: _userAnswers[_currentQuestionIndex] != null ? _finishExam : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.error,
+                            backgroundColor: _userAnswers[_currentQuestionIndex] != null 
+                                ? AppColors.error 
+                                : AppColors.error.withOpacity(0.3),
                             foregroundColor: AppColors.surface,
                             elevation: 0,
                             shape: RoundedRectangleBorder(

@@ -21,10 +21,12 @@ class AppState extends ChangeNotifier {
   static const String _userKey = 'user';
   static const String _groupKey = 'group';
   static const String _historyKey = 'history';
+  static const String _examRoundKey = 'examRound';
 
   User? _currentUser;
   UserGroup _selectedGroup = UserGroup.bd;
   final List<StudyHistory> _studyHistory = [];
+  int _examRound = 0;
 
   AppState() {
     _loadState();
@@ -51,6 +53,9 @@ class AppState extends ChangeNotifier {
       _selectedGroup = UserGroup.values[groupIndex];
     }
 
+    // 모의고사 회차 로드
+    _examRound = prefs.getInt(_examRoundKey) ?? 0;
+
     // 학습 이력 로드
     final historyJson = prefs.getString(_historyKey);
     if (historyJson != null) {
@@ -69,6 +74,7 @@ class AppState extends ChangeNotifier {
                 isCorrect: item['isCorrect'] ?? false,
                 solvedDate: DateTime.parse(item['solvedDate']),
                 isPracticeMode: item['isPracticeMode'] ?? false,
+                examRound: item['examRound'],
               ));
             }
           } catch (e) {
@@ -105,6 +111,9 @@ class AppState extends ChangeNotifier {
     // 선택된 과목 저장
     await prefs.setInt(_groupKey, _selectedGroup.index);
 
+    // 모의고사 회차 저장
+    await prefs.setInt(_examRoundKey, _examRound);
+
     // 학습 이력 저장
     final historyList = _studyHistory.map((history) => {
       'id': history.id,
@@ -113,6 +122,7 @@ class AppState extends ChangeNotifier {
       'isCorrect': history.isCorrect,
       'solvedDate': history.solvedDate.toIso8601String(),
       'isPracticeMode': history.isPracticeMode,
+      'examRound': history.examRound,
     }).toList();
     await prefs.setString(_historyKey, json.encode(historyList));
   }
@@ -125,6 +135,9 @@ class AppState extends ChangeNotifier {
 
   /// 학습 이력 getter
   List<StudyHistory> get studyHistory => List.unmodifiable(_studyHistory);
+
+  /// 모의고사 회차 getter
+  int get examRound => _examRound;
 
   /// 사용자 로그인 처리 메소드
   Future<void> loginUser(String nickname) async {
@@ -161,10 +174,26 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 모의고사 완료 처리 메소드
+  Future<void> completeExam(List<StudyHistory> examHistories) async {
+    print("모의고사 완료: ${_examRound + 1}회차");
+    _examRound++;
+    
+    // 모의고사 회차 정보를 각 문제에 추가
+    for (final history in examHistories) {
+      history.examRound = _examRound;
+      _studyHistory.add(history);
+    }
+    
+    await _saveState();
+    notifyListeners();
+  }
+
   /// 학습 이력 초기화 메소드
   Future<void> clearHistory() async {
     print("학습 이력 초기화");
     _studyHistory.clear();
+    _examRound = 0;
     await _saveState();
     notifyListeners();
   }
@@ -175,6 +204,7 @@ class AppState extends ChangeNotifier {
     _currentUser = null;
     _selectedGroup = UserGroup.bd;
     _studyHistory.clear();
+    _examRound = 0;
     await _saveState();
     notifyListeners();
   }

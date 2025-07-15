@@ -17,6 +17,7 @@ class StudyHistory {
   final DateTime solvedDate;
   final bool isPracticeMode;
   final String group;
+  int? examRound; // 모의고사 회차 (연습문제는 null)
 
   StudyHistory({
     required this.id,
@@ -25,6 +26,7 @@ class StudyHistory {
     required this.solvedDate,
     required this.isPracticeMode,
     required this.group,
+    this.examRound,
   });
 
   /// JSON에서 StudyHistory 객체 생성
@@ -37,6 +39,7 @@ class StudyHistory {
       solvedDate: DateTime.parse(json['solvedDate'] as String),
       isPracticeMode: json['isPracticeMode'] as bool,
       group: json['group'] as String,
+      examRound: json['examRound'] as int?,
     );
   }
 
@@ -50,6 +53,7 @@ class StudyHistory {
       'solvedDate': solvedDate.toIso8601String(),
       'isPracticeMode': isPracticeMode,
       'group': group,
+      'examRound': examRound,
     };
   }
 }
