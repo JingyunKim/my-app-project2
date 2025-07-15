@@ -32,8 +32,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   /// 다음 화면으로 자동 전환하는 메소드
   Future<void> _navigateToNextScreen() async {
-    print("3초 후 다음 화면으로 전환합니다.");
-    await Future.delayed(const Duration(seconds: 3));
+    print("2초 후 다음 화면으로 전환합니다.");
+    await Future.delayed(const Duration(seconds: 2));
     if (mounted) {
       final appState = context.read<AppState>();
       final user = appState.currentUser;
