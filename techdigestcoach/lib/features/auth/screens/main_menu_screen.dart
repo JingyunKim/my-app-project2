@@ -310,31 +310,13 @@ class MainMenuScreen extends StatelessWidget {
                           children: [
                             Expanded(
                               child: _ManagementButton(
-                                title: '학습 이력',
-                                icon: Icons.history_outlined,
-                                color: accentColor,
+                                title: '학습 이력 확인' ,
+                                icon: Icons.history,
+                                color: accentColor, // 투명도 제거
                                 onTap: () {
                                   Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (_) => const HistoryScreen()),
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: _ManagementButton(
-                                title: '틀린 문제',
-                                icon: Icons.refresh_outlined,
-                                color: accent2Color,
-                                onTap: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('준비 중인 기능입니다.'),
-                                      backgroundColor: AppColors.warning,
-                                      behavior: SnackBarBehavior.floating,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
+                                    MaterialPageRoute(
+                                      builder: (_) => const HistoryScreen(),
                                     ),
                                   );
                                 },

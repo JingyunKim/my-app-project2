@@ -17,6 +17,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../providers/app_state.dart';
 import '../../../shared/models/question.dart';
 import '../../../shared/models/study_history.dart';
+import '../../../shared/models/user_group.dart';
 import 'wrong_answers_screen.dart';
 
 /// 학습 이력 화면 위젯
@@ -27,8 +28,15 @@ class HistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     print('학습 이력 화면을 구성합니다.');
     final appState = context.watch<AppState>();
-    final practiceHistory = appState.studyHistory.where((h) => h.isPracticeMode).toList();
-    final examHistory = appState.studyHistory.where((h) => !h.isPracticeMode).toList();
+    final selectedGroup = appState.selectedGroup;
+    
+    // 선택된 과목에 따라 학습 이력 필터링
+    final practiceHistory = appState.studyHistory
+        .where((h) => h.isPracticeMode && h.group == selectedGroup.toString())
+        .toList();
+    final examHistory = appState.studyHistory
+        .where((h) => !h.isPracticeMode && h.group == selectedGroup.toString())
+        .toList();
 
     // 연습문제 통계 계산
     final totalPractice = practiceHistory.length;
@@ -76,7 +84,7 @@ class HistoryScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
-          '학습 이력',
+          '${selectedGroup == UserGroup.bd ? 'BD' : 'STAFF'} 학습 이력',
           style: AppTextStyles.heading.copyWith(
             color: AppColors.text,
             fontWeight: FontWeight.w600,
