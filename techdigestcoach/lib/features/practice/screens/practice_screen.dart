@@ -35,6 +35,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
   late List<Question> _questions;
   int _currentQuestionIndex = 0;
   bool _showAnswer = false;
+  int? _selectedAnswer; // 사용자가 선택한 답안을 저장하는 변수 추가
 
   @override
   void initState() {
@@ -59,6 +60,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
     print('다음 문제로 이동');
     setState(() {
       _showAnswer = false;
+      _selectedAnswer = null; // 선택한 답안 초기화
       if (_currentQuestionIndex < _questions.length - 1) {
         _currentQuestionIndex++;
       }
@@ -70,6 +72,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
     print('이전 문제로 이동');
     setState(() {
       _showAnswer = false;
+      _selectedAnswer = null; // 선택한 답안 초기화
       if (_currentQuestionIndex > 0) {
         _currentQuestionIndex--;
       }
@@ -103,6 +106,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
     );
 
     setState(() {
+      _selectedAnswer = selectedAnswer; // 사용자가 선택한 답안 저장
       _showAnswer = true;
     });
   }
@@ -157,10 +161,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
         ),
         backgroundColor: AppColors.surface,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.text),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        automaticallyImplyLeading: false, // 뒤로가기 버튼 제거
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 16),
@@ -268,7 +269,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         child: _AnswerOption(
                           option: question.options[index],
                           isSelected: _showAnswer && index == question.correctAnswer,
-                          onTap: () => _handleAnswer(index),
+                          isUserSelected: _selectedAnswer == index,
+                          onTap: _showAnswer ? null : () => _handleAnswer(index), // 답안 선택 후에는 더 이상 선택 불가
                         ),
                       ),
                     ),
@@ -374,9 +376,11 @@ class _PracticeScreenState extends State<PracticeScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _currentQuestionIndex < _questions.length - 1 ? _nextQuestion : null,
+                        onPressed: (_currentQuestionIndex < _questions.length - 1 && _selectedAnswer != null) ? _nextQuestion : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: (_currentQuestionIndex < _questions.length - 1 && _selectedAnswer != null) 
+                              ? AppColors.primary 
+                              : AppColors.divider,
                           foregroundColor: AppColors.surface,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -409,30 +413,63 @@ class _PracticeScreenState extends State<PracticeScreen> {
 class _AnswerOption extends StatelessWidget {
   final String option;
   final bool isSelected;
-  final VoidCallback onTap;
+  final bool isUserSelected; // 사용자가 선택한 답안인지 여부
+  final VoidCallback? onTap; // null일 수 있도록 수정
 
   const _AnswerOption({
     required this.option,
     required this.isSelected,
+    required this.isUserSelected,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    // 색상 결정 로직
+    Color backgroundColor;
+    Color borderColor;
+    Color textColor;
+    Color circleColor;
+    IconData? iconData;
+    Color iconColor = AppColors.surface;
+
+    if (isSelected) {
+      // 정답인 경우 (초록색)
+      backgroundColor = AppColors.success.withOpacity(0.1);
+      borderColor = AppColors.success;
+      textColor = AppColors.success;
+      circleColor = AppColors.success;
+      iconData = Icons.check;
+    } else if (isUserSelected) {
+      // 사용자가 선택한 오답인 경우 (붉은색)
+      backgroundColor = AppColors.error.withOpacity(0.1);
+      borderColor = AppColors.error;
+      textColor = AppColors.error;
+      circleColor = AppColors.error;
+      iconData = Icons.close;
+    } else {
+      // 선택되지 않은 경우
+      backgroundColor = AppColors.surface;
+      borderColor = AppColors.border;
+      textColor = AppColors.text;
+      circleColor = AppColors.surface;
+      iconData = null;
+    }
+
     return Container(
       decoration: BoxDecoration(
-        color: isSelected ? AppColors.success.withOpacity(0.1) : AppColors.surface,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isSelected ? AppColors.success : AppColors.border,
-          width: isSelected ? 2 : 1,
+          color: borderColor,
+          width: (isSelected || isUserSelected) ? 2 : 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: isSelected 
-                ? AppColors.success.withOpacity(0.2)
+            color: (isSelected || isUserSelected)
+                ? (isSelected ? AppColors.success : AppColors.error).withOpacity(0.2)
                 : AppColors.text.withOpacity(0.05),
-            blurRadius: isSelected ? 10 : 5,
+            blurRadius: (isSelected || isUserSelected) ? 10 : 5,
             offset: const Offset(0, 2),
           ),
         ],
@@ -452,16 +489,16 @@ class _AnswerOption extends StatelessWidget {
                   height: 24,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isSelected ? AppColors.success : AppColors.surface,
+                    color: circleColor,
                     border: Border.all(
-                      color: isSelected ? AppColors.success : AppColors.border,
+                      color: borderColor,
                       width: 2,
                     ),
                   ),
-                  child: isSelected
-                      ? const Icon(
-                          Icons.check,
-                          color: AppColors.surface,
+                  child: iconData != null
+                      ? Icon(
+                          iconData,
+                          color: iconColor,
                           size: 16,
                         )
                       : null,
@@ -472,8 +509,8 @@ class _AnswerOption extends StatelessWidget {
                   child: Text(
                     option,
                     style: AppTextStyles.body.copyWith(
-                      color: isSelected ? AppColors.success : AppColors.text,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      color: textColor,
+                      fontWeight: (isSelected || isUserSelected) ? FontWeight.w600 : FontWeight.w400,
                       height: 1.3,
                       fontSize: 14,
                     ),
