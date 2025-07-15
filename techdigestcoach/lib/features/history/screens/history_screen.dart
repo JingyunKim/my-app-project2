@@ -1,135 +1,80 @@
 /// 학습 이력 화면
 /// 
-/// 사용자의 학습 이력을 확인할 수 있는 화면입니다.
-/// 전체 통계와 날짜별 학습 이력을 표시하며, 정답률과 문제 수를 확인할 수 있습니다.
-/// 
+/// 사용자의 연습문제 및 모의고사 학습 이력을 보여주는 화면입니다.
+/// 상단에는 연습문제 통계와 틀린 문제 다시 풀기 기능을,
+/// 하단에는 모의고사 응시 이력을 표 형태로 제공합니다.
+///
 /// 작성자: 개발팀
 /// 작성일: 2024
 /// 버전: 1.0.0
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fl_chart/fl_chart.dart';
 
-// 스타일 import
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
-
-// 모델 import
-import '../../../shared/models/study_history.dart';
-import '../../../shared/models/user_group.dart';
-
-// Provider import
 import '../../../providers/app_state.dart';
+import '../../../shared/models/question.dart';
+import '../../../shared/models/study_history.dart';
+import 'wrong_answers_screen.dart';
 
 /// 학습 이력 화면 위젯
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
 
-  /// 정답률 계산 메소드
-  double _calculateAccuracy(List<StudyHistory> history) {
-    print('정답률 계산');
-    if (history.isEmpty) return 0;
-    final correctCount = history.where((h) => h.isCorrect).length;
-    return correctCount / history.length * 100;
-  }
-
-  /// 과목별 통계 계산 메소드
-  Map<String, dynamic> _calculateGroupStats(List<StudyHistory> history) {
-    print('과목별 통계 계산');
-    final bdHistory = history.where((h) => h.group == UserGroup.bd).toList();
-    final staffHistory = history.where((h) => h.group == UserGroup.staff).toList();
-    
-    return {
-      'bd': {
-        'total': bdHistory.length,
-        'correct': bdHistory.where((h) => h.isCorrect).length,
-        'accuracy': bdHistory.isEmpty ? 0 : bdHistory.where((h) => h.isCorrect).length / bdHistory.length * 100,
-      },
-      'staff': {
-        'total': staffHistory.length,
-        'correct': staffHistory.where((h) => h.isCorrect).length,
-        'accuracy': staffHistory.isEmpty ? 0 : staffHistory.where((h) => h.isCorrect).length / staffHistory.length * 100,
-      },
-    };
-  }
-
-  /// 모의고사 점수 계산 메소드
-  Map<String, List<double>> _calculateExamScores(List<StudyHistory> history) {
-    print('모의고사 점수 계산');
-    final examHistory = history.where((h) => !h.isPracticeMode).toList();
-    final bdScores = <double>[];
-    final staffScores = <double>[];
-    
-    // 모의고사 점수 계산 (30문제 기준, 1문제당 3.33점)
-    for (final item in examHistory) {
-      final score = item.isCorrect ? 3.33 : 0.0;
-      if (item.group == UserGroup.bd) {
-        bdScores.add(score);
-      } else {
-        staffScores.add(score);
-      }
-    }
-    
-    return {
-      'bd': bdScores,
-      'staff': staffScores,
-    };
-  }
-
-  /// 날짜별 학습 이력 그룹화 메소드
-  Map<String, List<StudyHistory>> _groupHistoryByDate(List<StudyHistory> history) {
-    print('날짜별 학습 이력 그룹화');
-    final grouped = <String, List<StudyHistory>>{};
-    for (final item in history) {
-      final date = _formatDate(item.solvedDate);
-      if (!grouped.containsKey(date)) {
-        grouped[date] = [];
-      }
-      grouped[date]!.add(item);
-    }
-    return grouped;
-  }
-
-  /// 날짜 포맷팅 메소드
-  String _formatDate(DateTime date) {
-    print('날짜 포맷팅: $date');
-    return '${date.year}년 ${date.month}월 ${date.day}일';
-  }
-
   @override
   Widget build(BuildContext context) {
-    print('HistoryScreen build 메소드 호출');
-    final selectedGroup = context.watch<AppState>().selectedGroup;
-    final history = context.watch<AppState>().studyHistory.where((h) => h.group == selectedGroup).toList();
-    final accuracy = _calculateAccuracy(history);
-    final examHistories = history.where((h) => !h.isPracticeMode).toList();
-    final groupedHistory = _groupHistoryByDate(history);
+    print('학습 이력 화면을 구성합니다.');
+    final appState = context.watch<AppState>();
+    final practiceHistory = appState.studyHistory.where((h) => h.isPracticeMode).toList();
+    final examHistory = appState.studyHistory.where((h) => !h.isPracticeMode).toList();
 
-    // 모의고사 점수 리스트 (응시별 총점)
-    List<double> examScores = [];
-    Map<String, List<StudyHistory>> examGroups = {};
-    for (final h in examHistories) {
-      final date = _formatDate(h.solvedDate);
-      examGroups.putIfAbsent(date, () => []);
-      examGroups[date]!.add(h);
+    // 연습문제 통계 계산
+    final totalPractice = practiceHistory.length;
+    final correctPractice = practiceHistory.where((h) => h.isCorrect).length;
+    final wrongPractice = totalPractice - correctPractice;
+
+    // 틀린 연습문제 목록
+    final wrongPracticeQuestions = practiceHistory
+        .where((h) => !h.isCorrect && h.question != null)
+        .map((h) => h.question!)
+        .toList();
+
+    // 모의고사 이력을 날짜별로 그룹화
+    final examGroups = <String, List<StudyHistory>>{};
+    for (final history in examHistory) {
+      if (history.question != null) {
+        final date = _formatDate(history.solvedDate);
+        if (!examGroups.containsKey(date)) {
+          examGroups[date] = [];
+        }
+        examGroups[date]!.add(history);
+      }
     }
-    for (final entry in examGroups.entries) {
-      final total = entry.value.length;
-      final correct = entry.value.where((h) => h.isCorrect).length;
-      examScores.add(total == 0 ? 0 : correct / total * 100);
-    }
-    // fl_chart용 데이터 변환
-    final List<FlSpot> scoreSpots = [
-      for (int i = 0; i < examScores.length; i++)
-        FlSpot(i.toDouble() + 1, examScores[i])
-    ];
+
+    // 모의고사 응시 이력 데이터 생성
+    final examRecords = examGroups.entries.map((entry) {
+      final examQuestions = entry.value;
+      final correctCount = examQuestions.where((q) => q.isCorrect).length;
+      final score = (correctCount / examQuestions.length * 100).round();
+      final wrongQuestions = examQuestions
+          .where((h) => !h.isCorrect && h.question != null)
+          .map((h) => h.question!)
+          .toList();
+      
+      return ExamRecord(
+        date: entry.key,
+        round: examGroups.keys.toList().indexOf(entry.key) + 1,
+        score: score,
+        wrongQuestions: wrongQuestions,
+      );
+    }).toList();
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
-          selectedGroup == UserGroup.bd ? 'BD 학습 이력' : 'STAFF 학습 이력',
+          '학습 이력',
           style: AppTextStyles.heading.copyWith(
             color: AppColors.text,
             fontWeight: FontWeight.w600,
@@ -137,399 +82,138 @@ class HistoryScreen extends StatelessWidget {
         ),
         backgroundColor: AppColors.surface,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.text),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppColors.surface,
-              AppColors.background,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 연습문제 이력 섹션
+              _buildPracticeHistorySection(
+                context: context,
+                totalPractice: totalPractice,
+                correctPractice: correctPractice,
+                wrongPractice: wrongPractice,
+                wrongQuestions: wrongPracticeQuestions,
+              ),
+              const SizedBox(height: 24),
+              // 모의고사 이력 섹션
+              _buildExamHistorySection(context, examRecords),
             ],
           ),
         ),
-        child: Column(
-          children: [
-            // 내 과목 통계 카드
-            Container(
-              margin: const EdgeInsets.all(24),
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: AppColors.accent.withOpacity(0.2),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.text.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: AppColors.accent,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(
-                          Icons.analytics_outlined,
-                          color: AppColors.surface,
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Text(
-                        selectedGroup == UserGroup.bd ? 'BD 과목 통계' : 'STAFF 과목 통계',
-                        style: AppTextStyles.heading.copyWith(
-                          color: AppColors.text,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              '${history.length}',
-                              style: AppTextStyles.title.copyWith(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 24,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '총 문제 수',
-                              style: AppTextStyles.caption.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              '${accuracy.toStringAsFixed(1)}%',
-                              style: AppTextStyles.title.copyWith(
-                                color: AppColors.success,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 24,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '정답률',
-                              style: AppTextStyles.caption.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  // 모의고사 점수 변화 그래프
-                  if (scoreSpots.isNotEmpty)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '모의고사 점수 변화',
-                          style: AppTextStyles.subtitle.copyWith(
-                            color: AppColors.accent,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: 160,
-                          child: LineChart(
-                            LineChartData(
-                              minY: 0,
-                              maxY: 100,
-                              titlesData: FlTitlesData(
-                                leftTitles: AxisTitles(
-                                  sideTitles: SideTitles(showTitles: true, reservedSize: 32),
-                                ),
-                                bottomTitles: AxisTitles(
-                                  sideTitles: SideTitles(showTitles: true, reservedSize: 24),
-                                ),
-                                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                              ),
-                              gridData: FlGridData(show: true),
-                              borderData: FlBorderData(show: true),
-                              lineBarsData: [
-                                LineChartBarData(
-                                  spots: scoreSpots,
-                                  isCurved: true,
-                                  color: AppColors.accent,
-                                  barWidth: 3,
-                                  dotData: FlDotData(show: true),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+      ),
+    );
+  }
+
+  /// 날짜 포맷팅 메소드
+  String _formatDate(DateTime date) {
+    print('날짜를 포맷팅합니다: $date');
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  /// 연습문제 이력 섹션을 구성하는 위젯
+  Widget _buildPracticeHistorySection({
+    required BuildContext context,
+    required int totalPractice,
+    required int correctPractice,
+    required int wrongPractice,
+    required List<Question> wrongQuestions,
+  }) {
+    print('연습문제 이력 섹션을 구성합니다.');
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.text.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '연습문제 학습 현황',
+            style: AppTextStyles.subtitle.copyWith(
+              color: AppColors.text,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 16),
+          // 통계 그리드
+          Row(
+            children: [
+              _buildStatItem('푼 문제', '$totalPractice', AppColors.primary),
+              _buildStatItem('정답', '$correctPractice', AppColors.success),
+              _buildStatItem('오답', '$wrongPractice', AppColors.error),
+            ],
+          ),
+          const SizedBox(height: 24),
+          // 틀린 문제 다시 풀기 버튼
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: wrongQuestions.isEmpty ? null : () {
+                print('틀린 문제 다시 풀기 버튼이 클릭되었습니다.');
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => WrongAnswersScreen(
+                      wrongQuestions: wrongQuestions,
+                      title: '틀린 연습문제 다시 풀기',
                     ),
-                ],
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                disabledBackgroundColor: AppColors.primary.withOpacity(0.3),
+              ),
+              child: Text(
+                '틀린 문제 다시 풀기',
+                style: AppTextStyles.button,
               ),
             ),
-            // 모의고사 응시 이력 섹션
-            if (examGroups.isNotEmpty)
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: AppColors.accent.withOpacity(0.2),
-                    width: 1,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.text.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: AppColors.accent.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.quiz_outlined,
-                            color: AppColors.accent,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          '모의고사 응시 이력',
-                          style: AppTextStyles.subtitle.copyWith(
-                            color: AppColors.text,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    // 모의고사 응시 이력 테이블
-                    ...examGroups.entries.map((entry) {
-                      final date = entry.key;
-                      final examItems = entry.value;
-                      final correctCount = examItems.where((item) => item.isCorrect).length;
-                      final accuracy = (correctCount / examItems.length * 100).toStringAsFixed(1);
-                      final examNumber = examGroups.keys.toList().indexOf(date) + 1;
-                      
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.background,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: AppColors.border,
-                            width: 1,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            // 응시 횟수
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: AppColors.accent,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '$examNumber',
-                                  style: AppTextStyles.subtitle.copyWith(
-                                    color: AppColors.surface,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            // 날짜
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                date,
-                                style: AppTextStyles.body.copyWith(
-                                  color: AppColors.text,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                            // 점수
-                            Expanded(
-                              child: Text(
-                                '$accuracy점',
-                                style: AppTextStyles.subtitle.copyWith(
-                                  color: AppColors.accent,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            // 정답/오답
-                            Expanded(
-                              child: Text(
-                                '$correctCount/${examItems.length}',
-                                style: AppTextStyles.body.copyWith(
-                                  color: AppColors.textSecondary,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                  ],
-                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 통계 아이템을 구성하는 위젯
+  Widget _buildStatItem(String label, String value, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Text(
+              value,
+              style: AppTextStyles.heading.copyWith(
+                color: color,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
-            // 날짜별 학습 이력
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                itemCount: groupedHistory.length,
-                itemBuilder: (context, index) {
-                  final date = groupedHistory.keys.elementAt(index);
-                  final items = groupedHistory[date]!;
-                  final correctCount = items.where((item) => item.isCorrect).length;
-                  final accuracy = (correctCount / items.length * 100).toStringAsFixed(1);
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: AppColors.border,
-                        width: 1,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.text.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: AppColors.accent.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Icon(
-                                Icons.calendar_today_outlined,
-                                color: AppColors.accent,
-                                size: 20,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              date,
-                              style: AppTextStyles.subtitle.copyWith(
-                                color: AppColors.text,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const Spacer(),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: AppColors.success.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: AppColors.success.withOpacity(0.3),
-                                  width: 1,
-                                ),
-                              ),
-                              child: Text(
-                                '$accuracy%',
-                                style: AppTextStyles.caption.copyWith(
-                                  color: AppColors.success,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _StatItem(
-                                label: '푼 문제',
-                                value: '${items.length}문제',
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: _StatItem(
-                                label: '정답',
-                                value: '$correctCount문제',
-                                color: AppColors.success,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: _StatItem(
-                                label: '오답',
-                                value: '${items.length - correctCount}문제',
-                                color: AppColors.error,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.textSecondary,
               ),
             ),
           ],
@@ -537,50 +221,167 @@ class HistoryScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-/// 통계 아이템 위젯
-class _StatItem extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-
-  const _StatItem({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  /// 모의고사 이력 섹션을 구성하는 위젯
+  Widget _buildExamHistorySection(BuildContext context, List<ExamRecord> examRecords) {
+    print('모의고사 이력 섹션을 구성합니다.');
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: color.withOpacity(0.2),
-          width: 1,
-        ),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.text.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            value,
+            '모의고사 응시 이력',
             style: AppTextStyles.subtitle.copyWith(
-              color: color,
-              fontWeight: FontWeight.w700,
+              color: AppColors.text,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.textSecondary,
+          const SizedBox(height: 16),
+          if (examRecords.isEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Text(
+                  '아직 모의고사 응시 이력이 없습니다.',
+                  style: AppTextStyles.body.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            )
+          else
+            Table(
+              columnWidths: const {
+                0: FlexColumnWidth(1), // 회차
+                1: FlexColumnWidth(1), // 점수
+                2: FlexColumnWidth(2), // 틀린 문제 보기 버튼
+              },
+              children: [
+                // 테이블 헤더
+                TableRow(
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  children: [
+                    _buildTableHeader('회차'),
+                    _buildTableHeader('점수'),
+                    _buildTableHeader('틀린 문제'),
+                  ],
+                ),
+                // 모의고사 이력 데이터
+                ...examRecords.map((record) => _buildTableRow(
+                  context: context,
+                  round: record.round.toString(),
+                  score: '${record.score}',
+                  onPressed: record.wrongQuestions.isEmpty ? null : () {
+                    print('${record.round}회차 틀린 문제 보기 버튼이 클릭되었습니다.');
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => WrongAnswersScreen(
+                          wrongQuestions: record.wrongQuestions,
+                          title: '${record.round}회차 틀린 문제',
+                        ),
+                      ),
+                    );
+                  },
+                )),
+              ],
             ),
-          ),
         ],
       ),
     );
   }
+
+  /// 테이블 헤더를 구성하는 위젯
+  Widget _buildTableHeader(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      child: Text(
+        text,
+        style: AppTextStyles.body.copyWith(
+          color: AppColors.text,
+          fontWeight: FontWeight.w600,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  /// 테이블 행을 구성하는 위젯
+  TableRow _buildTableRow({
+    required BuildContext context,
+    required String round,
+    required String score,
+    VoidCallback? onPressed,
+  }) {
+    return TableRow(
+      children: [
+        // 회차
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          child: Text(
+            round,
+            style: AppTextStyles.body.copyWith(color: AppColors.text),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        // 점수
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          child: Text(
+            score,
+            style: AppTextStyles.body.copyWith(color: AppColors.text),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        // 틀린 문제 보기 버튼
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          child: TextButton(
+            onPressed: onPressed,
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              '틀린 문제 보기',
+              style: AppTextStyles.button.copyWith(
+                color: AppColors.primary,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// 모의고사 기록을 담는 클래스
+class ExamRecord {
+  final String date;
+  final int round;
+  final int score;
+  final List<Question> wrongQuestions;
+
+  ExamRecord({
+    required this.date,
+    required this.round,
+    required this.score,
+    required this.wrongQuestions,
+  });
 } 

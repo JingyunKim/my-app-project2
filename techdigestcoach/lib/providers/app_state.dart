@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../shared/models/user.dart';
 import '../shared/models/user_group.dart';
 import '../shared/models/study_history.dart';
+import '../shared/models/question.dart';
 
 /// 앱 상태 관리 클래스
 class AppState extends ChangeNotifier {
@@ -53,17 +54,33 @@ class AppState extends ChangeNotifier {
     // 학습 이력 로드
     final historyJson = prefs.getString(_historyKey);
     if (historyJson != null) {
-      final List<dynamic> historyList = json.decode(historyJson);
-      _studyHistory.clear();
-      _studyHistory.addAll(
-        historyList.map((item) => StudyHistory(
-          group: UserGroup.values[item['group']],
-          questionId: item['questionId'],
-          isCorrect: item['isCorrect'],
-          solvedDate: DateTime.parse(item['solvedDate']),
-          isPracticeMode: item['isPracticeMode'],
-        )),
-      );
+      try {
+        final List<dynamic> historyList = json.decode(historyJson);
+        _studyHistory.clear();
+        for (final item in historyList) {
+          try {
+            final questionData = item['question'] as Map<String, dynamic>?;
+            if (questionData != null) {
+              final question = Question.fromJson(questionData);
+              _studyHistory.add(StudyHistory(
+                id: item['id'] ?? 'legacy_${DateTime.now().millisecondsSinceEpoch}',
+                question: question,
+                group: item['group'] ?? 'bd',
+                isCorrect: item['isCorrect'] ?? false,
+                solvedDate: DateTime.parse(item['solvedDate']),
+                isPracticeMode: item['isPracticeMode'] ?? false,
+              ));
+            }
+          } catch (e) {
+            print('잘못된 학습 이력 데이터를 건너뜁니다: $e');
+            // 잘못된 데이터는 건너뛰고 계속 진행
+          }
+        }
+      } catch (e) {
+        print('학습 이력 로드 중 오류 발생: $e');
+        // 전체 로드 실패 시 빈 리스트로 초기화
+        _studyHistory.clear();
+      }
     }
 
     notifyListeners();
@@ -90,8 +107,9 @@ class AppState extends ChangeNotifier {
 
     // 학습 이력 저장
     final historyList = _studyHistory.map((history) => {
-      'group': history.group.index,
-      'questionId': history.questionId,
+      'id': history.id,
+      'question': history.question.toJson(),
+      'group': history.group,
       'isCorrect': history.isCorrect,
       'solvedDate': history.solvedDate.toIso8601String(),
       'isPracticeMode': history.isPracticeMode,
@@ -137,7 +155,7 @@ class AppState extends ChangeNotifier {
 
   /// 학습 이력 추가 메소드
   Future<void> addHistory(StudyHistory history) async {
-    print("학습 이력 추가: ${history.questionId}");
+    print("학습 이력 추가: ${history.question.content}");
     _studyHistory.add(history);
     await _saveState();
     notifyListeners();

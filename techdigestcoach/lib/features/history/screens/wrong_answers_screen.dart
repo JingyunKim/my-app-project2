@@ -1,8 +1,8 @@
-/// 연습 모드 화면
+/// 틀린 문제 다시 풀기 화면
 /// 
-/// 사용자가 시간 제한 없이 문제를 풀 수 있는 연습 모드 화면입니다.
-/// 문제를 선택하고 답안을 확인할 수 있으며, 이전/다음 문제로 이동할 수 있습니다.
-/// 
+/// 연습문제나 모의고사에서 틀린 문제들을 다시 풀어볼 수 있는 화면입니다.
+/// 문제를 하나씩 보여주고 답을 선택하면 즉시 정답을 확인할 수 있습니다.
+///
 /// 작성자: 개발팀
 /// 작성일: 2024
 /// 버전: 1.0.0
@@ -10,146 +10,79 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// 스타일 import
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
-
-// 모델 import
-import '../../../shared/models/question.dart';
-import '../../../shared/models/study_history.dart';
-import '../../../shared/models/sample_data.dart';
-import '../../../shared/models/user_group.dart';
-
-// Provider import
 import '../../../providers/app_state.dart';
+import '../../../shared/models/question.dart';
 
-/// 연습 모드 화면 위젯
-class PracticeScreen extends StatefulWidget {
-  const PracticeScreen({super.key});
+/// 틀린 문제 다시 풀기 화면 위젯
+class WrongAnswersScreen extends StatefulWidget {
+  final List<Question> wrongQuestions;
+  final String title;
+
+  const WrongAnswersScreen({
+    super.key,
+    required this.wrongQuestions,
+    required this.title,
+  });
 
   @override
-  State<PracticeScreen> createState() => _PracticeScreenState();
+  State<WrongAnswersScreen> createState() => _WrongAnswersScreenState();
 }
 
-class _PracticeScreenState extends State<PracticeScreen> {
-  late List<Question> _questions;
-  int _currentQuestionIndex = 0;
+class _WrongAnswersScreenState extends State<WrongAnswersScreen> {
+  int _currentIndex = 0;
+  late List<int?> _answers;
   bool _showAnswer = false;
 
   @override
   void initState() {
     super.initState();
-    print('PracticeScreen initState 호출');
-    _initializeQuestions();
+    print('틀린 문제 다시 풀기 화면을 초기화합니다.');
+    _answers = List.filled(widget.wrongQuestions.length, null);
   }
 
-  /// 문제 초기화 메소드
-  void _initializeQuestions() {
-    print('문제 초기화');
-    final userGroup = context.read<AppState>().selectedGroup;
-    _questions = sampleQuestions.where((q) => 
-      (userGroup == UserGroup.bd && q.group == "bd") || 
-      (userGroup == UserGroup.staff && q.group == "staff")
-    ).toList()..shuffle();
-    setState(() {});
-  }
-
-  /// 다음 문제로 이동하는 메소드
-  void _nextQuestion() {
-    print('다음 문제로 이동');
+  /// 답변 선택 처리 메소드
+  void _handleAnswer(int answer) {
+    print('답변이 선택되었습니다: $answer');
     setState(() {
-      _showAnswer = false;
-      if (_currentQuestionIndex < _questions.length - 1) {
-        _currentQuestionIndex++;
-      }
-    });
-  }
-
-  /// 이전 문제로 이동하는 메소드
-  void _previousQuestion() {
-    print('이전 문제로 이동');
-    setState(() {
-      _showAnswer = false;
-      if (_currentQuestionIndex > 0) {
-        _currentQuestionIndex--;
-      }
-    });
-  }
-
-  /// 정답 확인 메소드
-  void _toggleAnswer() {
-    print('정답 확인: ${_showAnswer ? '숨기기' : '보기'}');
-    setState(() {
-      _showAnswer = !_showAnswer;
-    });
-  }
-
-  /// 문제 선택 처리 메소드
-  void _handleAnswer(int selectedAnswer) {
-    print('선택한 답안: $selectedAnswer');
-    final question = _questions[_currentQuestionIndex];
-    final isCorrect = selectedAnswer == question.correctAnswer;
-    
-    // 학습 이력 저장
-    context.read<AppState>().addHistory(
-      StudyHistory(
-        id: 'practice_${DateTime.now().millisecondsSinceEpoch}_${_currentQuestionIndex}',
-        question: question,
-        group: (question.group == "bd" ? UserGroup.bd : UserGroup.staff).toString(),
-        isCorrect: isCorrect,
-        solvedDate: DateTime.now(),
-        isPracticeMode: true,
-      ),
-    );
-
-    setState(() {
+      _answers[_currentIndex] = answer;
       _showAnswer = true;
     });
   }
 
+  /// 다음 문제로 이동하는 메소드
+  void _nextQuestion() {
+    print('다음 문제로 이동합니다.');
+    if (_currentIndex < widget.wrongQuestions.length - 1) {
+      setState(() {
+        _currentIndex++;
+        _showAnswer = false;
+      });
+    }
+  }
+
+  /// 이전 문제로 이동하는 메소드
+  void _previousQuestion() {
+    print('이전 문제로 이동합니다.');
+    if (_currentIndex > 0) {
+      setState(() {
+        _currentIndex--;
+        _showAnswer = false;
+        _answers[_currentIndex] = null; // 이전 문제의 답안 초기화
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    print('PracticeScreen build 메소드 호출');
+    final question = widget.wrongQuestions[_currentIndex];
     
-    if (_questions.isEmpty) {
-      return Scaffold(
-        backgroundColor: AppColors.background,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                  strokeWidth: 3,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                '문제를 불러오는 중...',
-                style: AppTextStyles.body.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    final question = _questions[_currentQuestionIndex];
-
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
-          '연습 모드',
+          widget.title,
           style: AppTextStyles.heading.copyWith(
             color: AppColors.text,
             fontWeight: FontWeight.w600,
@@ -174,7 +107,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
               ),
             ),
             child: Text(
-              '${_currentQuestionIndex + 1}/${_questions.length}',
+              '${_currentIndex + 1}/${widget.wrongQuestions.length}',
               style: AppTextStyles.caption.copyWith(
                 color: AppColors.primary,
                 fontWeight: FontWeight.w600,
@@ -200,7 +133,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: LinearProgressIndicator(
-                value: (_currentQuestionIndex + 1) / _questions.length,
+                value: (_currentIndex + 1) / widget.wrongQuestions.length,
                 backgroundColor: AppColors.divider,
                 valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                 minHeight: 8,
@@ -238,7 +171,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: 'Q${_currentQuestionIndex + 1}. ',
+                                  text: 'Q${_currentIndex + 1}. ',
                                   style: AppTextStyles.subtitle.copyWith(
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.bold,
@@ -267,7 +200,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         padding: const EdgeInsets.only(bottom: 12),
                         child: _AnswerOption(
                           option: question.options[index],
-                          isSelected: _showAnswer && index == question.correctAnswer,
+                          isSelected: _answers[_currentIndex] == index,
                           onTap: () => _handleAnswer(index),
                         ),
                       ),
@@ -278,10 +211,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: AppColors.success.withOpacity(0.1),
+                          color: _answers[_currentIndex] == question.correctAnswer
+                              ? AppColors.success.withOpacity(0.1)
+                              : AppColors.error.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: AppColors.success.withOpacity(0.3),
+                            color: _answers[_currentIndex] == question.correctAnswer
+                                ? AppColors.success.withOpacity(0.3)
+                                : AppColors.error.withOpacity(0.3),
                             width: 1,
                           ),
                         ),
@@ -293,26 +230,42 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 Container(
                                   padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
-                                    color: AppColors.success,
+                                    color: _answers[_currentIndex] == question.correctAnswer
+                                        ? AppColors.success
+                                        : AppColors.error,
                                     borderRadius: BorderRadius.circular(6),
                                   ),
-                                  child: const Icon(
-                                    Icons.lightbulb_outline,
+                                  child: Icon(
+                                    _answers[_currentIndex] == question.correctAnswer
+                                        ? Icons.check
+                                        : Icons.close,
                                     color: AppColors.surface,
                                     size: 16,
                                   ),
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  '해설',
+                                  _answers[_currentIndex] == question.correctAnswer
+                                      ? '정답입니다!'
+                                      : '틀렸습니다.',
                                   style: AppTextStyles.subtitle.copyWith(
-                                    color: AppColors.success,
+                                    color: _answers[_currentIndex] == question.correctAnswer
+                                        ? AppColors.success
+                                        : AppColors.error,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 12),
+                            Text(
+                              '정답: ${question.options[question.correctAnswer]}',
+                              style: AppTextStyles.body.copyWith(
+                                color: AppColors.text,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
                             Text(
                               question.explanation,
                               style: AppTextStyles.body.copyWith(
@@ -345,15 +298,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 ),
                 child: Row(
                   children: [
-                    // 이전 버튼 제거
-                    // 연습모드 종료 버튼 추가
+                    // 이전 버튼
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(); // 메인 메뉴 등으로 이동
-                        },
+                        onPressed: _currentIndex > 0 ? _previousQuestion : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.error,
+                          backgroundColor: AppColors.primary,
                           foregroundColor: AppColors.surface,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -364,17 +314,18 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.exit_to_app, size: 16),
+                            Icon(Icons.arrow_back_ios, size: 16),
                             const SizedBox(width: 8),
-                            Text('연습모드 종료', style: AppTextStyles.button),
+                            Text('이전', style: AppTextStyles.button),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 12),
+                    // 다음 버튼
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _currentQuestionIndex < _questions.length - 1 ? _nextQuestion : null,
+                        onPressed: _currentIndex < widget.wrongQuestions.length - 1 ? _nextQuestion : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: AppColors.surface,
@@ -421,16 +372,16 @@ class _AnswerOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: isSelected ? AppColors.success.withOpacity(0.1) : AppColors.surface,
+        color: isSelected ? AppColors.primary.withOpacity(0.1) : AppColors.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isSelected ? AppColors.success : AppColors.border,
+          color: isSelected ? AppColors.primary : AppColors.border,
           width: isSelected ? 2 : 1,
         ),
         boxShadow: [
           BoxShadow(
             color: isSelected 
-                ? AppColors.success.withOpacity(0.2)
+                ? AppColors.primary.withOpacity(0.2)
                 : AppColors.text.withOpacity(0.05),
             blurRadius: isSelected ? 10 : 5,
             offset: const Offset(0, 2),
@@ -452,9 +403,9 @@ class _AnswerOption extends StatelessWidget {
                   height: 24,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isSelected ? AppColors.success : AppColors.surface,
+                    color: isSelected ? AppColors.primary : AppColors.surface,
                     border: Border.all(
-                      color: isSelected ? AppColors.success : AppColors.border,
+                      color: isSelected ? AppColors.primary : AppColors.border,
                       width: 2,
                     ),
                   ),
@@ -472,7 +423,7 @@ class _AnswerOption extends StatelessWidget {
                   child: Text(
                     option,
                     style: AppTextStyles.body.copyWith(
-                      color: isSelected ? AppColors.success : AppColors.text,
+                      color: isSelected ? AppColors.primary : AppColors.text,
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                       height: 1.3,
                       fontSize: 14,

@@ -6,29 +6,13 @@
 /// 작성자: 개발팀
 /// 작성일: 2024
 /// 버전: 1.0.0
-
 import "question.dart";
-
 /// 샘플 문제 데이터
 final List<Question> sampleQuestions = [
   // 기존 문제들 (1-17)
   Question(
-    id: "1",
-    question: "다음 중 BD 관련 질문입니다?",
-    type: "기본지식",
-    options: [
-      "A. 정답 1",
-      "B. 오답 1",
-      "C. 오답 2",
-      "D. 오답 3",
-      "E. 오답 4"
-    ],
-    correctAnswer: 0,
-    explanation: "이것은 BD 관련 기본 지식입니다.",
-    group: "bd",
-  ),
-  Question(
     id: "2",
+    content: "다음 중 STAFF 관련 질문입니다?",
     question: "다음 중 STAFF 관련 질문입니다?",
     type: "실무",
     options: [
@@ -39,11 +23,14 @@ final List<Question> sampleQuestions = [
       "E. 오답 4"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "이것은 STAFF 관련 실무 지식입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "3",
+    content: "BD 심화 질문입니다?",
     question: "BD 심화 질문입니다?",
     type: "심화",
     options: [
@@ -54,11 +41,14 @@ final List<Question> sampleQuestions = [
       "E. 오답 4"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "이것은 BD 관련 심화 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "4",
+    content: "STAFF 심화 질문입니다?",
     question: "STAFF 심화 질문입니다?",
     type: "심화",
     options: [
@@ -69,11 +59,14 @@ final List<Question> sampleQuestions = [
       "E. 오답 4"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "이것은 STAFF 관련 심화 지식입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "5",
+    content: "BD 실무 질문입니다?",
     question: "BD 실무 질문입니다?",
     type: "실무",
     options: [
@@ -84,11 +77,14 @@ final List<Question> sampleQuestions = [
       "E. 오답 4"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "이것은 BD 관련 실무 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "6",
+    content: "STAFF 기본 질문입니다?",
     question: "STAFF 기본 질문입니다?",
     type: "기본지식",
     options: [
@@ -99,11 +95,14 @@ final List<Question> sampleQuestions = [
       "E. 오답 4"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "이것은 STAFF 관련 기본 지식입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "7",
+    content: "임진왜란이 일어난 해는?",
     question: "임진왜란이 일어난 해는?",
     type: "테스트",
     options: [
@@ -114,11 +113,14 @@ final List<Question> sampleQuestions = [
       "E. 1792년"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '1592년'입니다. 해당 분야의 기본 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "8",
+    content: "세계에서 가장 긴 강은?",
     question: "세계에서 가장 긴 강은?",
     type: "테스트",
     options: [
@@ -129,11 +131,14 @@ final List<Question> sampleQuestions = [
       "E. 미시시피강"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '나일강'입니다. 해당 분야의 기본 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "9",
+    content: "Python의 주요 특징은?",
     question: "Python의 주요 특징은?",
     type: "테스트",
     options: [
@@ -144,11 +149,14 @@ final List<Question> sampleQuestions = [
       "E. 컴파일 필요"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '인터프리터 언어'입니다. 해당 분야의 기본 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "10",
+    content: "전자렌지 사용이 금지된 재질은?",
     question: "전자렌지 사용이 금지된 재질은?",
     type: "테스트",
     options: [
@@ -159,11 +167,14 @@ final List<Question> sampleQuestions = [
       "E. 실리콘"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '알루미늄'입니다. 해당 분야의 기본 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "11",
+    content: "세계에서 가장 큰 대륙은?",
     question: "세계에서 가장 큰 대륙은?",
     type: "테스트",
     options: [
@@ -174,11 +185,14 @@ final List<Question> sampleQuestions = [
       "E. 남아메리카"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '아시아'입니다. 해당 분야의 기본 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "12",
+    content: "대한민국의 수도는?",
     question: "대한민국의 수도는?",
     type: "테스트",
     options: [
@@ -189,11 +203,14 @@ final List<Question> sampleQuestions = [
       "E. 광주"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '서울'입니다. 해당 분야의 기본 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "13",
+    content: "HTML의 풀 네임은?",
     question: "HTML의 풀 네임은?",
     type: "테스트",
     options: [
@@ -204,11 +221,14 @@ final List<Question> sampleQuestions = [
       "E. Hyperlink Text Modeling Language"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 'HyperText Markup Language'입니다. 해당 분야의 기본 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "14",
+    content: "GDP는 무엇을 측정하나?",
     question: "GDP는 무엇을 측정하나?",
     type: "테스트",
     options: [
@@ -219,11 +239,14 @@ final List<Question> sampleQuestions = [
       "E. 국가 부채"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '국내 총생산'입니다. 해당 분야의 기본 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "15",
+    content: "빛은 어떤 경로로 움직이나?",
     question: "빛은 어떤 경로로 움직이나?",
     type: "테스트",
     options: [
@@ -234,11 +257,14 @@ final List<Question> sampleQuestions = [
       "E. 원형"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '직선'입니다. 해당 분야의 기본 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "16",
+    content: "축구 경기 한 팀 인원은?",
     question: "축구 경기 한 팀 인원은?",
     type: "테스트",
     options: [
@@ -249,11 +275,14 @@ final List<Question> sampleQuestions = [
       "E. 13명"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '11명'입니다. 해당 분야의 기본 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "17",
+    content: "수요와 공급 법칙에서, 공급이 줄면 가격은?",
     question: "수요와 공급 법칙에서, 공급이 줄면 가격은?",
     type: "테스트",
     options: [
@@ -264,13 +293,15 @@ final List<Question> sampleQuestions = [
       "E. 같다"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '오른다'입니다. 해당 분야의 기본 지식입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
-
   // BD 추가 문제들 (18-50)
   Question(
     id: "18",
+    content: "한국의 국화는?",
     question: "한국의 국화는?",
     type: "기본지식",
     options: [
@@ -281,11 +312,14 @@ final List<Question> sampleQuestions = [
       "E. 해바라기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '무궁화'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "19",
+    content: "지구의 위성은?",
     question: "지구의 위성은?",
     type: "기본지식",
     options: [
@@ -296,11 +330,14 @@ final List<Question> sampleQuestions = [
       "E. 토성"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '달'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "20",
+    content: "물의 화학식은?",
     question: "물의 화학식은?",
     type: "기본지식",
     options: [
@@ -311,11 +348,14 @@ final List<Question> sampleQuestions = [
       "E. CH4"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 'H2O'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "21",
+    content: "인간의 심장은 몇 개인가?",
     question: "인간의 심장은 몇 개인가?",
     type: "기본지식",
     options: [
@@ -326,11 +366,14 @@ final List<Question> sampleQuestions = [
       "E. 5개"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '1개'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "22",
+    content: "태양계에서 가장 큰 행성은?",
     question: "태양계에서 가장 큰 행성은?",
     type: "기본지식",
     options: [
@@ -341,11 +384,14 @@ final List<Question> sampleQuestions = [
       "E. 지구"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '목성'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "23",
+    content: "DNA의 이중나선 구조를 발견한 사람은?",
     question: "DNA의 이중나선 구조를 발견한 사람은?",
     type: "기본지식",
     options: [
@@ -356,11 +402,14 @@ final List<Question> sampleQuestions = [
       "E. 멘델"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '왓슨과 크릭'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "24",
+    content: "세계에서 가장 인구가 많은 나라는?",
     question: "세계에서 가장 인구가 많은 나라는?",
     type: "기본지식",
     options: [
@@ -371,11 +420,14 @@ final List<Question> sampleQuestions = [
       "E. 브라질"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '중국'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "25",
+    content: "지구의 대기 중 가장 많은 기체는?",
     question: "지구의 대기 중 가장 많은 기체는?",
     type: "기본지식",
     options: [
@@ -386,11 +438,14 @@ final List<Question> sampleQuestions = [
       "E. 헬륨"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '질소'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "26",
+    content: "인간의 뼈는 몇 개인가?",
     question: "인간의 뼈는 몇 개인가?",
     type: "기본지식",
     options: [
@@ -401,11 +456,14 @@ final List<Question> sampleQuestions = [
       "E. 220개"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '206개'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "27",
+    content: "세계에서 가장 높은 산은?",
     question: "세계에서 가장 높은 산은?",
     type: "기본지식",
     options: [
@@ -416,11 +474,14 @@ final List<Question> sampleQuestions = [
       "E. 마칼루"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '에베레스트'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "28",
+    content: "지구의 자전축은 몇 도 기울어져 있나?",
     question: "지구의 자전축은 몇 도 기울어져 있나?",
     type: "기본지식",
     options: [
@@ -431,11 +492,14 @@ final List<Question> sampleQuestions = [
       "E. 90도"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '23.5도'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "29",
+    content: "인간의 혈액형 중 가장 많은 것은?",
     question: "인간의 혈액형 중 가장 많은 것은?",
     type: "기본지식",
     options: [
@@ -446,11 +510,14 @@ final List<Question> sampleQuestions = [
       "E. Rh-형"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 'O형'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "30",
+    content: "세계에서 가장 큰 바다는?",
     question: "세계에서 가장 큰 바다는?",
     type: "기본지식",
     options: [
@@ -461,11 +528,14 @@ final List<Question> sampleQuestions = [
       "E. 남극해"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '태평양'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "31",
+    content: "지구의 표면적 중 육지의 비율은 약?",
     question: "지구의 표면적 중 육지의 비율은 약?",
     type: "기본지식",
     options: [
@@ -476,11 +546,14 @@ final List<Question> sampleQuestions = [
       "E. 40%"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '30%'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "32",
+    content: "인간의 뇌 무게는 평균 몇 kg인가?",
     question: "인간의 뇌 무게는 평균 몇 kg인가?",
     type: "기본지식",
     options: [
@@ -491,11 +564,14 @@ final List<Question> sampleQuestions = [
       "E. 1kg"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '1.4kg'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "33",
+    content: "세계에서 가장 긴 산맥은?",
     question: "세계에서 가장 긴 산맥은?",
     type: "기본지식",
     options: [
@@ -506,11 +582,14 @@ final List<Question> sampleQuestions = [
       "E. 우랄산맥"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '안데스산맥'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "34",
+    content: "지구의 자전 주기는?",
     question: "지구의 자전 주기는?",
     type: "기본지식",
     options: [
@@ -521,11 +600,14 @@ final List<Question> sampleQuestions = [
       "E. 6시간"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '24시간'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "35",
+    content: "인간의 근육은 몇 개인가?",
     question: "인간의 근육은 몇 개인가?",
     type: "기본지식",
     options: [
@@ -536,11 +618,14 @@ final List<Question> sampleQuestions = [
       "E. 800개"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '600개'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "36",
+    content: "세계에서 가장 큰 섬은?",
     question: "세계에서 가장 큰 섬은?",
     type: "기본지식",
     options: [
@@ -551,11 +636,14 @@ final List<Question> sampleQuestions = [
       "E. 바핀섬"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '그린란드'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "37",
+    content: "지구의 공전 주기는?",
     question: "지구의 공전 주기는?",
     type: "기본지식",
     options: [
@@ -566,11 +654,14 @@ final List<Question> sampleQuestions = [
       "E. 375일"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '365일'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "38",
+    content: "인간의 심장은 하루에 몇 번 뛰나?",
     question: "인간의 심장은 하루에 몇 번 뛰나?",
     type: "기본지식",
     options: [
@@ -581,11 +672,14 @@ final List<Question> sampleQuestions = [
       "E. 8만번"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '10만번'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "39",
+    content: "세계에서 가장 깊은 바다는?",
     question: "세계에서 가장 깊은 바다는?",
     type: "기본지식",
     options: [
@@ -596,11 +690,14 @@ final List<Question> sampleQuestions = [
       "E. 남극해"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '태평양'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "40",
+    content: "지구의 대기압은 평균 몇 기압인가?",
     question: "지구의 대기압은 평균 몇 기압인가?",
     type: "기본지식",
     options: [
@@ -611,11 +708,14 @@ final List<Question> sampleQuestions = [
       "E. 0.8기압"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '1기압'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "41",
+    content: "인간의 키는 몇 개의 뼈로 구성되어 있나?",
     question: "인간의 키는 몇 개의 뼈로 구성되어 있나?",
     type: "기본지식",
     options: [
@@ -626,11 +726,14 @@ final List<Question> sampleQuestions = [
       "E. 30개"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '26개'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "42",
+    content: "세계에서 가장 큰 사막은?",
     question: "세계에서 가장 큰 사막은?",
     type: "기본지식",
     options: [
@@ -641,11 +744,14 @@ final List<Question> sampleQuestions = [
       "E. 파타고니아사막"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '사하라사막'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "43",
+    content: "지구의 중력은 달의 몇 배인가?",
     question: "지구의 중력은 달의 몇 배인가?",
     type: "기본지식",
     options: [
@@ -656,11 +762,14 @@ final List<Question> sampleQuestions = [
       "E. 10배"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '6배'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "44",
+    content: "인간의 피부는 몇 층으로 구성되어 있나?",
     question: "인간의 피부는 몇 층으로 구성되어 있나?",
     type: "기본지식",
     options: [
@@ -671,11 +780,14 @@ final List<Question> sampleQuestions = [
       "E. 1층"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '3층'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "45",
+    content: "세계에서 가장 큰 호수는?",
     question: "세계에서 가장 큰 호수는?",
     type: "기본지식",
     options: [
@@ -686,11 +798,14 @@ final List<Question> sampleQuestions = [
       "E. 탕가니카호"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '카스피해'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "46",
+    content: "지구의 평균 온도는 섭씨 몇 도인가?",
     question: "지구의 평균 온도는 섭씨 몇 도인가?",
     type: "기본지식",
     options: [
@@ -701,11 +816,14 @@ final List<Question> sampleQuestions = [
       "E. 5도"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '15도'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "47",
+    content: "인간의 치아는 평균 몇 개인가?",
     question: "인간의 치아는 평균 몇 개인가?",
     type: "기본지식",
     options: [
@@ -716,11 +834,14 @@ final List<Question> sampleQuestions = [
       "E. 34개"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '32개'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "48",
+    content: "세계에서 가장 긴 강은?",
     question: "세계에서 가장 긴 강은?",
     type: "기본지식",
     options: [
@@ -731,11 +852,14 @@ final List<Question> sampleQuestions = [
       "E. 옐로우강"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '나일강'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "49",
+    content: "지구의 대기 중 산소 비율은?",
     question: "지구의 대기 중 산소 비율은?",
     type: "기본지식",
     options: [
@@ -746,11 +870,14 @@ final List<Question> sampleQuestions = [
       "E. 18%"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '21%'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
   Question(
     id: "50",
+    content: "인간의 뇌는 체중의 몇 %를 차지하나?",
     question: "인간의 뇌는 체중의 몇 %를 차지하나?",
     type: "기본지식",
     options: [
@@ -761,13 +888,15 @@ final List<Question> sampleQuestions = [
       "E. 4%"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '2%'입니다.",
+    createdAt: DateTime.now(),
     group: "bd",
   ),
-
   // STAFF 추가 문제들 (51-83)
   Question(
     id: "51",
+    content: "사무실에서 가장 중요한 것은?",
     question: "사무실에서 가장 중요한 것은?",
     type: "실무",
     options: [
@@ -778,11 +907,14 @@ final List<Question> sampleQuestions = [
       "E. 무관심"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '협력'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "52",
+    content: "업무 효율성을 높이는 방법은?",
     question: "업무 효율성을 높이는 방법은?",
     type: "실무",
     options: [
@@ -793,11 +925,14 @@ final List<Question> sampleQuestions = [
       "E. 포기하기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '계획 수립'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "53",
+    content: "동료와의 소통에서 중요한 것은?",
     question: "동료와의 소통에서 중요한 것은?",
     type: "실무",
     options: [
@@ -808,11 +943,14 @@ final List<Question> sampleQuestions = [
       "E. 회피"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '경청'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "54",
+    content: "업무 스트레스 해소법은?",
     question: "업무 스트레스 해소법은?",
     type: "실무",
     options: [
@@ -823,11 +961,14 @@ final List<Question> sampleQuestions = [
       "E. 회피"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '휴식'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "55",
+    content: "회의에서 중요한 것은?",
     question: "회의에서 중요한 것은?",
     type: "실무",
     options: [
@@ -838,11 +979,14 @@ final List<Question> sampleQuestions = [
       "E. 취소"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '준비'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "56",
+    content: "업무 마감 시간을 지키는 것은?",
     question: "업무 마감 시간을 지키는 것은?",
     type: "실무",
     options: [
@@ -853,11 +997,14 @@ final List<Question> sampleQuestions = [
       "E. 상관없음"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '중요'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "57",
+    content: "동료의 실수를 발견했을 때?",
     question: "동료의 실수를 발견했을 때?",
     type: "실무",
     options: [
@@ -868,11 +1015,14 @@ final List<Question> sampleQuestions = [
       "E. 회피하기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '친절히 알려주기'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "58",
+    content: "업무 환경에서 가장 중요한 것은?",
     question: "업무 환경에서 가장 중요한 것은?",
     type: "실무",
     options: [
@@ -883,11 +1033,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '안전'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "59",
+    content: "업무 보고서 작성 시 중요한 것은?",
     question: "업무 보고서 작성 시 중요한 것은?",
     type: "실무",
     options: [
@@ -898,11 +1051,14 @@ final List<Question> sampleQuestions = [
       "E. 회피"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '정확성'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "60",
+    content: "동료와의 갈등 해결 방법은?",
     question: "동료와의 갈등 해결 방법은?",
     type: "실무",
     options: [
@@ -913,11 +1069,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '대화'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "61",
+    content: "업무 시간 관리에서 중요한 것은?",
     question: "업무 시간 관리에서 중요한 것은?",
     type: "실무",
     options: [
@@ -928,11 +1087,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '우선순위'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "62",
+    content: "업무 성과 향상을 위한 방법은?",
     question: "업무 성과 향상을 위한 방법은?",
     type: "실무",
     options: [
@@ -943,11 +1105,14 @@ final List<Question> sampleQuestions = [
       "E. 중단"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '학습'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "63",
+    content: "동료와의 신뢰 구축 방법은?",
     question: "동료와의 신뢰 구축 방법은?",
     type: "실무",
     options: [
@@ -958,11 +1123,14 @@ final List<Question> sampleQuestions = [
       "E. 중단하기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '약속 지키기'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "64",
+    content: "업무 중 실수를 했을 때?",
     question: "업무 중 실수를 했을 때?",
     type: "실무",
     options: [
@@ -973,11 +1141,14 @@ final List<Question> sampleQuestions = [
       "E. 포기하기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '인정하고 수정'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "65",
+    content: "업무 환경 개선을 위해 필요한 것은?",
     question: "업무 환경 개선을 위해 필요한 것은?",
     type: "실무",
     options: [
@@ -988,11 +1159,14 @@ final List<Question> sampleQuestions = [
       "E. 중단"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '의견 제시'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "66",
+    content: "동료와의 업무 분담 시 중요한 것은?",
     question: "동료와의 업무 분담 시 중요한 것은?",
     type: "실무",
     options: [
@@ -1003,11 +1177,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '공정성'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "67",
+    content: "업무 중 집중력을 높이는 방법은?",
     question: "업무 중 집중력을 높이는 방법은?",
     type: "실무",
     options: [
@@ -1018,11 +1195,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '휴식'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "68",
+    content: "업무 스킬 향상을 위한 방법은?",
     question: "업무 스킬 향상을 위한 방법은?",
     type: "실무",
     options: [
@@ -1033,11 +1213,14 @@ final List<Question> sampleQuestions = [
       "E. 중단"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '연습'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "69",
+    content: "동료와의 정보 공유 시 중요한 것은?",
     question: "동료와의 정보 공유 시 중요한 것은?",
     type: "실무",
     options: [
@@ -1048,11 +1231,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '정확성'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "70",
+    content: "업무 중 문제 해결 방법은?",
     question: "업무 중 문제 해결 방법은?",
     type: "실무",
     options: [
@@ -1063,11 +1249,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '분석'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "71",
+    content: "업무 환경에서의 예의는?",
     question: "업무 환경에서의 예의는?",
     type: "실무",
     options: [
@@ -1078,11 +1267,14 @@ final List<Question> sampleQuestions = [
       "E. 상관없음"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '중요'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "72",
+    content: "동료와의 업무 협력 시 중요한 것은?",
     question: "동료와의 업무 협력 시 중요한 것은?",
     type: "실무",
     options: [
@@ -1093,11 +1285,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '소통'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "73",
+    content: "업무 중 스트레스 관리 방법은?",
     question: "업무 중 스트레스 관리 방법은?",
     type: "실무",
     options: [
@@ -1108,11 +1303,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '운동'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "74",
+    content: "업무 성과 평가에서 중요한 것은?",
     question: "업무 성과 평가에서 중요한 것은?",
     type: "실무",
     options: [
@@ -1123,11 +1321,14 @@ final List<Question> sampleQuestions = [
       "E. 회피"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '객관성'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "75",
+    content: "동료와의 업무 분쟁 해결 방법은?",
     question: "동료와의 업무 분쟁 해결 방법은?",
     type: "실무",
     options: [
@@ -1138,11 +1339,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '중재'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "76",
+    content: "업무 중 안전 수칙은?",
     question: "업무 중 안전 수칙은?",
     type: "실무",
     options: [
@@ -1153,11 +1357,14 @@ final List<Question> sampleQuestions = [
       "E. 상관없음"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '필수'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "77",
+    content: "업무 환경 개선을 위한 제안은?",
     question: "업무 환경 개선을 위한 제안은?",
     type: "실무",
     options: [
@@ -1168,11 +1375,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '환영'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "78",
+    content: "동료와의 업무 공유 시 중요한 것은?",
     question: "동료와의 업무 공유 시 중요한 것은?",
     type: "실무",
     options: [
@@ -1183,11 +1393,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '투명성'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "79",
+    content: "업무 중 혁신을 위한 자세는?",
     question: "업무 중 혁신을 위한 자세는?",
     type: "실무",
     options: [
@@ -1198,11 +1411,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '개방적'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "80",
+    content: "업무 환경에서의 리더십은?",
     question: "업무 환경에서의 리더십은?",
     type: "실무",
     options: [
@@ -1213,11 +1429,14 @@ final List<Question> sampleQuestions = [
       "E. 상관없음"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '중요'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "81",
+    content: "동료와의 업무 협조 시 중요한 것은?",
     question: "동료와의 업무 협조 시 중요한 것은?",
     type: "실무",
     options: [
@@ -1228,11 +1447,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '상호존중'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "82",
+    content: "업무 중 전문성 향상 방법은?",
     question: "업무 중 전문성 향상 방법은?",
     type: "실무",
     options: [
@@ -1243,11 +1465,14 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '지속학습'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
   Question(
     id: "83",
+    content: "업무 환경에서의 변화 대응은?",
     question: "업무 환경에서의 변화 대응은?",
     type: "실무",
     options: [
@@ -1258,7 +1483,9 @@ final List<Question> sampleQuestions = [
       "E. 포기"
     ],
     correctAnswer: 0,
+    answer: true,
     explanation: "정답은 '적응'입니다.",
+    createdAt: DateTime.now(),
     group: "staff",
   ),
 ];

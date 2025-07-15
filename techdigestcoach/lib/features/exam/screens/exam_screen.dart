@@ -127,8 +127,9 @@ class _ExamScreenState extends State<ExamScreen> {
       if (_userAnswers[i] != null) {
         context.read<AppState>().addHistory(
           StudyHistory(
-            group: _questions[i].group == "bd" ? UserGroup.bd : UserGroup.staff,
-            questionId: _questions[i].id,
+            id: 'exam_${DateTime.now().millisecondsSinceEpoch}_$i',
+            question: _questions[i],
+            group: (_questions[i].group == "bd" ? UserGroup.bd : UserGroup.staff).toString(),
             isCorrect: _userAnswers[i] == _questions[i].correctAnswer,
             solvedDate: DateTime.now(),
             isPracticeMode: false,
