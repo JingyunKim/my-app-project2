@@ -10,7 +10,6 @@
 /// 문제 모델 클래스
 class Question {
   final String id;
-  final String content;
   final String question;
   final String type;
   final List<String> options;
@@ -19,20 +18,29 @@ class Question {
   final String explanation;
   final DateTime createdAt;
   final String group;
-  final bool isExamQuestion;
+  final String difficulty;
+  final int score;
+  final String topic;
+  final String title;
+  final String intent;
+  final String reference;
 
   Question({
     required this.id,
-    required this.content,
-    this.question = '',
-    this.type = '',
-    this.options = const [],
-    this.correctAnswer = -1,
+    required this.question,
+    required this.type,
+    required this.options,
+    required this.correctAnswer,
     required this.answer,
     required this.explanation,
     required this.createdAt,
     required this.group,
-    this.isExamQuestion = false,
+    required this.difficulty,
+    required this.score,
+    required this.topic,
+    required this.title,
+    required this.intent,
+    required this.reference,
   });
 
   /// JSON에서 Question 객체 생성
@@ -40,16 +48,20 @@ class Question {
     print('Question 객체를 JSON에서 생성합니다.');
     return Question(
       id: json['id'] as String,
-      content: json['content'] as String,
-      question: json['question'] as String? ?? '',
-      type: json['type'] as String? ?? '',
-      options: (json['options'] as List<dynamic>?)?.cast<String>() ?? [],
-      correctAnswer: json['correctAnswer'] as int? ?? -1,
+      question: json['question'] as String,
+      type: json['type'] as String,
+      options: (json['options'] as List<dynamic>).cast<String>(),
+      correctAnswer: json['correctAnswer'] as int,
       answer: json['answer'] as bool,
       explanation: json['explanation'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       group: json['group'] as String,
-      isExamQuestion: json['isExamQuestion'] as bool? ?? false,
+      difficulty: json['difficulty'] as String,
+      score: json['score'] as int,
+      topic: json['topic'] as String,
+      title: json['title'] as String,
+      intent: json['intent'] as String,
+      reference: json['reference'] as String,
     );
   }
 
@@ -58,7 +70,6 @@ class Question {
     print('Question 객체를 JSON으로 변환합니다.');
     return {
       'id': id,
-      'content': content,
       'question': question,
       'type': type,
       'options': options,
@@ -67,7 +78,12 @@ class Question {
       'explanation': explanation,
       'createdAt': createdAt.toIso8601String(),
       'group': group,
-      'isExamQuestion': isExamQuestion,
+      'difficulty': difficulty,
+      'score': score,
+      'topic': topic,
+      'title': title,
+      'intent': intent,
+      'reference': reference,
     };
   }
 }

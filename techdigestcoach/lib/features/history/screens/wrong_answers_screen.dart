@@ -279,6 +279,100 @@ class _WrongAnswersScreenState extends State<WrongAnswersScreen> {
                           ],
                         ),
                       ),
+                      const SizedBox(height: 24),
+                      // 추가 정보 카드
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: AppColors.border,
+                            width: 1,
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '추가 정보',
+                              style: AppTextStyles.subtitle.copyWith(
+                                color: AppColors.text,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            // 난이도
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    '난이도: ${question.difficulty}',
+                                    style: AppTextStyles.caption.copyWith(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.secondary.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    '주제: ${question.topic}',
+                                    style: AppTextStyles.caption.copyWith(
+                                      color: AppColors.secondary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            // 학습 의도
+                            Text(
+                              '학습 의도',
+                              style: AppTextStyles.body.copyWith(
+                                color: AppColors.textSecondary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              question.intent,
+                              style: AppTextStyles.body.copyWith(
+                                color: AppColors.text,
+                                height: 1.5,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            // 참조
+                            Text(
+                              '참조',
+                              style: AppTextStyles.body.copyWith(
+                                color: AppColors.textSecondary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              question.reference,
+                              style: AppTextStyles.body.copyWith(
+                                color: AppColors.text,
+                                height: 1.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ],
                 ),

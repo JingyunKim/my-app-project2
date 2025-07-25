@@ -168,7 +168,7 @@ class AppState extends ChangeNotifier {
 
   /// 학습 이력 추가 메소드
   Future<void> addHistory(StudyHistory history) async {
-    print("학습 이력 추가: ${history.question.content}");
+    print("학습 이력 추가: ${history.question.question}");
     _studyHistory.add(history);
     await _saveState();
     notifyListeners();
