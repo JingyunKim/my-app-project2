@@ -246,7 +246,7 @@ class _NicknameScreenState extends State<NicknameScreen> {
                         ),
                         child: TextField(
                           controller: _nicknameController,
-                          maxLength: 6,
+                          maxLength: 10,
                           decoration: InputDecoration(
                             hintText: '닉네임을 입력하세요',
                             hintStyle: AppTextStyles.body.copyWith(
@@ -277,7 +277,7 @@ class _NicknameScreenState extends State<NicknameScreen> {
                         bottom: 0,
                         child: Center(
                           child: Text(
-                            '${_nicknameController.text.length}/6',
+                            '${_nicknameController.text.length}/10',
                             style: AppTextStyles.caption.copyWith(
                               color: AppColors.textLight,
                               fontSize: 12,
