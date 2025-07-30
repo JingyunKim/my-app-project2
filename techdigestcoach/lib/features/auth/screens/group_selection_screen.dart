@@ -139,8 +139,14 @@ class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
             ),
             TextButton(
               onPressed: () {
+                // 데이터 초기화
                 context.read<AppState>().resetData();
+                // 현재 다이얼로그 닫기
                 Navigator.of(context).pop();
+                // 닉네임 입력 화면으로 이동
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (_) => const NicknameScreen()),
+                );
               },
               child: Text(
                 '초기화',
