@@ -9,6 +9,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async'; // Timer 사용을 위한 import
 
 // 스타일 import
 import '../../../core/theme/app_colors.dart';
@@ -25,8 +26,21 @@ import 'main_menu_screen.dart';
 import 'nickname_screen.dart';
 
 /// 과목 선택 화면 위젯
-class GroupSelectionScreen extends StatelessWidget {
+class GroupSelectionScreen extends StatefulWidget {
   const GroupSelectionScreen({super.key});
+
+  @override
+  State<GroupSelectionScreen> createState() => _GroupSelectionScreenState();
+}
+
+class _GroupSelectionScreenState extends State<GroupSelectionScreen> {
+  Timer? _longPressTimer;
+
+  @override
+  void dispose() {
+    _longPressTimer?.cancel();
+    super.dispose();
+  }
 
   /// 과목 선택 처리 메소드
   void _handleGroupSelection(BuildContext context, UserGroup group) {
@@ -34,6 +48,110 @@ class GroupSelectionScreen extends StatelessWidget {
     context.read<AppState>().selectGroup(group);
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => const MainMenuScreen()),
+    );
+  }
+
+  /// 앱 정보 표시 메소드
+  void _showAppInfo(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            '앱 정보',
+            style: AppTextStyles.heading.copyWith(
+              color: AppColors.text,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'TechDigestCoach',
+                style: AppTextStyles.subtitle.copyWith(
+                  color: AppColors.text,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '버전: 1.0.0',
+                style: AppTextStyles.body.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '만든이: chim\nEmail: wlsrbs321@naver.com',
+                style: AppTextStyles.body.copyWith(
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                '확인',
+                style: AppTextStyles.button.copyWith(
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// 데이터 초기화 확인 다이얼로그 표시 메소드
+  void _showDataResetDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            '데이터 초기화',
+            style: AppTextStyles.heading.copyWith(
+              color: AppColors.text,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: Text(
+            '모든 학습 데이터가 삭제됩니다.\n계속하시겠습니까?',
+            style: AppTextStyles.body.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                '취소',
+                style: AppTextStyles.button.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                context.read<AppState>().resetData();
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                '초기화',
+                style: AppTextStyles.button.copyWith(
+                  color: AppColors.error,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -55,73 +173,22 @@ class GroupSelectionScreen extends StatelessWidget {
         elevation: 0,
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            icon: Icon(Icons.info_outline, color: AppColors.textSecondary),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text(
-                      '앱 정보',
-                      style: AppTextStyles.heading.copyWith(
-                        color: AppColors.text,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'TechDigestCoach',
-                          style: AppTextStyles.heading.copyWith(
-                            color: AppColors.text,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          '버전: 1.0.0',
-                          style: AppTextStyles.body.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        Text(
-                          '개발자 정보',
-                          style: AppTextStyles.heading.copyWith(
-                            color: AppColors.text,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          '만든이: chim\nEmail: wlsrbs321@naver.com',
-                          style: AppTextStyles.body.copyWith(
-                            color: AppColors.textSecondary,
-                            height: 1.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: Text(
-                          '확인',
-                          style: AppTextStyles.button.copyWith(
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
+          GestureDetector(
+            onTap: () => _showAppInfo(context),
+            onLongPressStart: (_) {
+              // 길게 누르기 시작 시 타이머 시작
+              _longPressTimer = Timer(const Duration(seconds: 3), () {
+                _showDataResetDialog(context);
+              });
             },
+            onLongPressEnd: (_) {
+              // 길게 누르기 종료 시 타이머 취소
+              _longPressTimer?.cancel();
+            },
+            child: IconButton(
+              icon: Icon(Icons.info_outline, color: AppColors.textSecondary),
+              onPressed: () => _showAppInfo(context),
+            ),
           ),
         ],
       ),
