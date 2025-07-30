@@ -24,11 +24,19 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   build_runner: ^2.4.7
   json_serializable: ^6.7.1
+  flutter_launcher_icons: ^0.14.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icons/icon.png"
+  min_sdk_android: 21
 
 flutter:
   uses-material-design: true
   
-  # 배민체 폰트 등록
   fonts:
     - family: BMDOHYEON
       fonts:
@@ -38,6 +46,4 @@ flutter:
         - asset: assets/fonts/baemin/BMJUA.ttf
   
   assets:
-    - assets/data/
-    - assets/images/
-    - assets/animations/
+    - assets/
