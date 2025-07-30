@@ -45,12 +45,16 @@ class AppState extends ChangeNotifier {
         group: UserGroup.values[userMap['group']],
         lastLoginDate: DateTime.parse(userMap['lastLoginDate']),
       );
+      // 사용자의 마지막 선택 그룹으로 설정
+      _selectedGroup = _currentUser!.group;
     }
 
-    // 선택된 과목 로드
-    final groupIndex = prefs.getInt(_groupKey);
-    if (groupIndex != null) {
-      _selectedGroup = UserGroup.values[groupIndex];
+    // 선택된 과목 로드 (사용자가 없을 때만)
+    if (_currentUser == null) {
+      final groupIndex = prefs.getInt(_groupKey);
+      if (groupIndex != null) {
+        _selectedGroup = UserGroup.values[groupIndex];
+      }
     }
 
     // 모의고사 회차 로드

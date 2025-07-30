@@ -49,9 +49,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
     print('문제 초기화');
     final userGroup = context.read<AppState>().selectedGroup;
     _questions = sampleQuestions.where((q) => 
-      (userGroup == UserGroup.bd && q.group == "bd") || 
-      (userGroup == UserGroup.staff && q.group == "staff")
+      (userGroup == UserGroup.bd && q.group.toLowerCase() == "bd") || 
+      (userGroup == UserGroup.staff && q.group.toLowerCase() == "staff")
     ).toList()..shuffle();
+    print('필터링된 문제 수: ${_questions.length}');
     setState(() {});
   }
 
