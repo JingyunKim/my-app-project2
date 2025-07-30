@@ -82,25 +82,13 @@ class _SplashScreenState extends State<SplashScreen> {
                 children: [
                   // 로고 영역
                   Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [AppColors.primary, AppColors.secondary],
-                      ),
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.3),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.school_outlined,
-                      size: 60,
-                      color: AppColors.surface,
+                    width: 200,
+                    height: 200,
+                    child: Image.asset(
+                      'assets/images/splash12.png',
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.contain,
                     ),
                   ),
                   const SizedBox(height: 32),

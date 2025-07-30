@@ -46,4 +46,5 @@ flutter:
         - asset: assets/fonts/baemin/BMJUA.ttf
   
   assets:
-    - assets/
+    - assets/images/
+    - assets/images/splash12.png
