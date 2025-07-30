@@ -957,7 +957,7 @@ final List<Question> sampleQuestions = [
     reference: "STAFF 교재 2장 3절 p.33"
   ),
   Question(
-    id: "01",
+    id: "41",
     question: "클라우드 도입 시 비용 예측이 어려운 주요 원인 중 하나는?",
     type: "BD",
     options: [
@@ -980,7 +980,7 @@ final List<Question> sampleQuestions = [
     reference: "BD 교재 2장 1절 p.22"
   ),
 Question(
-  id: "2",
+  id: "42",
   question: "AI 프로젝트 성공을 위한 데이터 확보 측면에서 가장 중요한 요소는?",
   type: "BD",
   options: [
@@ -1003,7 +1003,7 @@ Question(
   reference: "BD 교재 4장 1절 p.41"
 ),
 Question(
-  id: "3",
+  id: "43",
   question: "애자일 조직 문화의 핵심 특징으로 적절한 것은?",
   type: "BD",
   options: [
@@ -1026,7 +1026,7 @@ Question(
   reference: "BD 교재 3장 2절 p.35"
 ),
 Question(
-  id: "4",
+  id: "44",
   question: "SINGLEX 플랫폼의 주요 목적은?",
   type: "BD",
   options: [
@@ -1049,7 +1049,7 @@ Question(
   reference: "BD 교재 6장 1절 p.72"
 ),
 Question(
-  id: "5",
+  id: "45",
   question: "다음 중 CX(고객 경험) 개선을 위한 정성적 데이터로 적절한 것은?",
   type: "BD",
   options: [
@@ -1072,7 +1072,7 @@ Question(
   reference: "BD 교재 5장 1절 p.60"
 ),
   Question(
-  id: "6",
+  id: "46",
   question: "데이터 레이크(Data Lake)의 특징으로 가장 적절한 것은?",
   type: "BD",
   options: [
@@ -1095,7 +1095,7 @@ Question(
   reference: "BD 교재 5장 2절 p.62"
 ),
 Question(
-  id: "7",
+  id: "47",
   question: "클라우드 환경에서 DevOps를 도입하는 주된 이유는?",
   type: "BD",
   options: [
@@ -1118,7 +1118,7 @@ Question(
   reference: "BD 교재 3장 1절 p.31"
 ),
 Question(
-  id: "8",
+  id: "48",
   question: "생성형 AI(Generative AI)의 가장 일반적인 활용 예시는?",
   type: "BD",
   options: [
@@ -1141,7 +1141,7 @@ Question(
   reference: "BD 교재 4장 2절 p.44"
 ),
 Question(
-  id: "9",
+  id: "49",
   question: "애자일 조직의 '스크럼 마스터' 역할로 가장 적절한 것은?",
   type: "BD",
   options: [
@@ -1164,7 +1164,7 @@ Question(
   reference: "BD 교재 3장 2절 p.36"
 ),
 Question(
-  id: "10",
+  id: "50",
   question: "클라우드 보안에서 'Zero Trust' 모델의 핵심 원칙은?",
   type: "BD",
   options: [
@@ -1187,7 +1187,7 @@ Question(
   reference: "BD 교재 5장 3절 p.68"
 ),
 Question(
-  id: "11",
+  id: "51",
   question: "SINGLEX의 기반 기술로 활용되는 분석 프레임워크는?",
   type: "BD",
   options: [
@@ -1210,7 +1210,7 @@ Question(
   reference: "BD 교재 6장 1절 p.74"
 ),
 Question(
-  id: "12",
+  id: "52",
   question: "클라우드 네이티브 아키텍처의 대표적 기술로 보기 어려운 것은?",
   type: "BD",
   options: [
@@ -1233,7 +1233,7 @@ Question(
   reference: "BD 교재 2장 2절 p.24"
 ),
 Question(
-  id: "13",
+  id: "53",
   question: "LG CNS의 디지털 트윈 솔루션 'PerfecTwin'의 주된 기능은?",
   type: "BD",
   options: [
@@ -1256,7 +1256,7 @@ Question(
   reference: "BD 교재 6장 3절 p.78"
 ),
 Question(
-  id: "14",
+  id: "54",
   question: "데이터 기반 의사결정의 장점으로 가장 적절한 것은?",
   type: "BD",
   options: [
@@ -1279,7 +1279,7 @@ Question(
   reference: "BD 교재 5장 1절 p.61"
 ),
 Question(
-  id: "15",
+  id: "55",
   question: "AIDD의 주된 활용 영역은?",
   type: "BD",
   options: [
@@ -1302,7 +1302,7 @@ Question(
   reference: "BD 교재 6장 2절 p.76"
 ),
 Question(
-  id: "26",
+  id: "56",
   question: "생성형 AI의 학습 방식 중 'Self-Supervised Learning'의 특징은?",
   type: "BD",
   options: [
@@ -1325,7 +1325,7 @@ Question(
   reference: "BD 교재 4장 2절 p.45"
 ),
 Question(
-  id: "27",
+  id: "57",
   question: "클라우드 마이그레이션 전략 중 'Replatform'은 어떤 방식인가?",
   type: "BD",
   options: [
@@ -1348,7 +1348,7 @@ Question(
   reference: "BD 교재 2장 3절 p.26"
 ),
 Question(
-  id: "28",
+  id: "58",
   question: "CX 전략 수립 시 고객 여정 맵(Journey Map)의 주된 목적은?",
   type: "BD",
   options: [
@@ -1371,7 +1371,7 @@ Question(
   reference: "BD 교재 5장 1절 p.60"
 ),
 Question(
-  id: "29",
+  id: "59",
   question: "PerfecTwin이 지원하는 산업 시뮬레이션 분야로 적절하지 않은 것은?",
   type: "BD",
   options: [
@@ -1394,7 +1394,7 @@ Question(
   reference: "BD 교재 6장 3절 p.79"
 ),
 Question(
-  id: "30",
+  id: "60",
   question: "LG CNS의 LENA 플랫폼은 어떤 기능을 중심으로 설계되었는가?",
   type: "BD",
   options: [
@@ -1417,7 +1417,7 @@ Question(
   reference: "BD 교재 6장 3절 p.80"
 ),
 Question(
-  id: "31",
+  id: "61",
   question: "데이터 거버넌스의 목적 중 가장 적절한 것은?",
   type: "BD",
   options: [
@@ -1440,7 +1440,7 @@ Question(
   reference: "BD 교재 5장 1절 p.61"
 ),
 Question(
-  id: "32",
+  id: "62",
   question: "애자일 방법론의 산출물 중 하나로, 제품의 모든 요구사항을 정리한 목록은?",
   type: "BD",
   options: [
@@ -1463,7 +1463,7 @@ Question(
   reference: "BD 교재 3장 2절 p.36"
 ),
 Question(
-  id: "33",
+  id: "63",
   question: "클라우드 컴퓨팅의 핵심 이점으로 보기 어려운 것은?",
   type: "BD",
   options: [
@@ -1486,7 +1486,7 @@ Question(
   reference: "BD 교재 2장 1절 p.22"
 ),
 Question(
-  id: "34",
+  id: "64",
   question: "데이터 분석에서 'Feature Engineering'의 주된 목적은?",
   type: "BD",
   options: [
@@ -1509,7 +1509,7 @@ Question(
   reference: "BD 교재 5장 2절 p.63"
 ),
 Question(
-  id: "35",
+  id: "65",
   question: "LG CNS의 AIDD가 제공하는 기능으로 가장 적절한 것은?",
   type: "BD",
   options: [
@@ -1532,7 +1532,7 @@ Question(
   reference: "BD 교재 6장 2절 p.75"
 ),
 Question(
-  id: "36",
+  id: "66",
   question: "AI 프로젝트에서 모델 배포 후 지속적으로 수행해야 할 작업은?",
   type: "BD",
   options: [
@@ -1555,7 +1555,7 @@ Question(
   reference: "BD 교재 4장 2절 p.45"
 ),
 Question(
-  id: "37",
+  id: "67",
   question: "Agile에서 스프린트(Sprint)의 일반적인 기간은?",
   type: "BD",
   options: [
@@ -1578,7 +1578,7 @@ Question(
   reference: "BD 교재 3장 2절 p.36"
 ),
 Question(
-  id: "38",
+  id: "68",
   question: "보안 위협 분석 시 사용하는 대표적 기법은?",
   type: "BD",
   options: [
@@ -1601,7 +1601,7 @@ Question(
   reference: "BD 교재 5장 3절 p.68"
 ),
 Question(
-  id: "39",
+  id: "69",
   question: "LG CNS의 솔루션 중 디지털 전환 과제를 통합적으로 수행할 수 있도록 지원하는 플랫폼은?",
   type: "BD",
   options: [
@@ -1624,7 +1624,7 @@ Question(
   reference: "BD 교재 6장 1절 p.73"
 ),
 Question(
-  id: "40",
+  id: "70",
   question: "LENA 플랫폼의 주요 분석 기반은 무엇인가?",
   type: "BD",
   options: [
@@ -1647,7 +1647,7 @@ Question(
   reference: "BD 교재 6장 3절 p.80"
 ),
 Question(
-  id: "41",
+  id: "71",
   question: "AI 도입 초기 단계에서 가장 우선 고려해야 할 사항은?",
   type: "BD",
   options: [
@@ -1670,7 +1670,7 @@ Question(
   reference: "BD 교재 4장 1절 p.41"
 ),
 Question(
-  id: "42",
+  id: "72",
   question: "다음 중 마이크로서비스 아키텍처(MSA)의 장점으로 적절하지 않은 것은?",
   type: "BD",
   options: [
@@ -1693,7 +1693,7 @@ Question(
   reference: "BD 교재 3장 1절 p.32"
 ),
 Question(
-  id: "43",
+  id: "73",
   question: "클라우드 전환 프로젝트의 사전 진단 항목으로 적절한 것은?",
   type: "BD",
   options: [
@@ -1716,7 +1716,7 @@ Question(
   reference: "BD 교재 2장 1절 p.23"
 ),
 Question(
-  id: "44",
+  id: "74",
   question: "CX 전략에서 페르소나(Persona)를 정의하는 목적은?",
   type: "BD",
   options: [
@@ -1739,7 +1739,7 @@ Question(
   reference: "BD 교재 5장 1절 p.60"
 ),
 Question(
-  id: "45",
+  id: "75",
   question: "SINGLEX 플랫폼의 주요 활용 대상은?",
   type: "BD",
   options: [
@@ -1762,7 +1762,7 @@ Question(
   reference: "BD 교재 6장 1절 p.72"
 ),
 Question(
-  id: "46",
+  id: "76",
   question: "생성형 AI가 기존 AI와 가장 크게 구분되는 지점은?",
   type: "BD",
   options: [
@@ -1785,7 +1785,7 @@ Question(
   reference: "BD 교재 4장 2절 p.44"
 ),
 Question(
-  id: "47",
+  id: "77",
   question: "보안 사고 대응 체계에서 '사전 예방' 단계의 활동은?",
   type: "BD",
   options: [
@@ -1808,7 +1808,7 @@ Question(
   reference: "BD 교재 5장 3절 p.68"
 ),
 Question(
-  id: "48",
+  id: "78",
   question: "LENA 플랫폼이 제공하는 AI 분석의 주요 대상은?",
   type: "BD",
   options: [
@@ -1831,7 +1831,7 @@ Question(
   reference: "BD 교재 6장 3절 p.80"
 ),
 Question(
-  id: "49",
+  id: "79",
   question: "클라우드 도입 시 기대할 수 없는 효과는?",
   type: "BD",
   options: [
@@ -1854,7 +1854,7 @@ Question(
   reference: "BD 교재 2장 1절 p.22"
 ),
 Question(
-  id: "50",
+  id: "80",
   question: "데이터 분석 프로젝트에서 '모델 드리프트(Model Drift)'가 발생하는 주요 원인은?",
   type: "BD",
   options: [
@@ -1877,7 +1877,7 @@ Question(
   reference: "BD 교재 5장 2절 p.64"
 ),
 Question(
-  id: "51",
+  id: "81",
   question: "다음 중 클라우드 네이티브 애플리케이션의 특징으로 가장 적절한 것은 무엇인가?",
   type: "BD",
   options: [
@@ -1901,7 +1901,7 @@ Question(
 ),
 
 Question(
-  id: "52",
+  id: "82",
   question: "SINGLEX 서비스의 주요 목적 중 하나는 무엇인가?",
   type: "BD",
   options: [
@@ -1925,7 +1925,7 @@ Question(
 ),
 
 Question(
-  id: "53",
+  id: "83",
   question: "다음 중 GenAI의 CX 활용 방안으로 가장 거리가 먼 것은?",
   type: "BD",
   options: [
@@ -1948,7 +1948,7 @@ Question(
   reference: "BD 교재 4장 2절 p.49",
 ),
 Question(
-  id: "54",
+  id: "84",
   question: "다음 중 클라우드 서비스 모델 중 PaaS에 해당하는 예시는 무엇인가?",
   type: "BD",
   options: [
@@ -1972,7 +1972,7 @@ Question(
 ),
 
 Question(
-  id: "55",
+  id: "85",
   question: "다음 중 애자일 방법론의 주요 특징으로 가장 적절한 것은?",
   type: "BD",
   options: [
@@ -1996,7 +1996,7 @@ Question(
 ),
 
 Question(
-  id: "56",
+  id: "86",
   question: "생성형 AI의 산업 적용 사례로 적절하지 않은 것은?",
   type: "BD",
   options: [
@@ -2020,7 +2020,7 @@ Question(
 ),
 
 Question(
-  id: "57",
+  id: "87",
   question: "다음 중 AIDD 플랫폼이 제공하는 기능으로 가장 적절한 것은?",
   type: "BD",
   options: [
@@ -2044,7 +2044,7 @@ Question(
 ),
 
 Question(
-  id: "58",
+  id: "88",
   question: "데이터 기반 마케팅 최적화를 지원하는 LG CNS의 플랫폼은 무엇인가?",
   type: "BD",
   options: [
@@ -2068,7 +2068,7 @@ Question(
 ),
 
 Question(
-  id: "59",
+  id: "89",
   question: "애플리케이션 현대화의 주요 전략으로 가장 적절한 것은?",
   type: "BD",
   options: [
@@ -2091,7 +2091,7 @@ Question(
   reference: "BD 교재 2장 3절 p.30",
 ),
 Question(
-  id: "60",
+  id: "90",
   question: "클라우드에서의 멀티테넌시(Multi-tenancy) 개념을 가장 잘 설명한 것은?",
   type: "BD",
   options: [
@@ -2115,7 +2115,7 @@ Question(
 ),
 
 Question(
-  id: "61",
+  id: "91",
   question: "다음 중 LENA 플랫폼의 특징으로 가장 적절한 것은?",
   type: "BD",
   options: [
@@ -2139,7 +2139,7 @@ Question(
 ),
 
 Question(
-  id: "62",
+  id: "92",
   question: "PerfecTwin 플랫폼의 주요 활용 목적은 무엇인가?",
   type: "BD",
   options: [
@@ -2163,7 +2163,7 @@ Question(
 ),
 
 Question(
-  id: "63",
+  id: "93",
   question: "다음 중 클라우드 마이그레이션 시 고려해야 할 요소로 가장 적절하지 않은 것은?",
   type: "BD",
   options: [
@@ -2187,7 +2187,7 @@ Question(
 ),
 
 Question(
-  id: "64",
+  id: "94",
   question: "다음 중 AI 모델 개발 라이프사이클 중 데이터 전처리 단계에 해당하지 않는 것은?",
   type: "BD",
   options: [
@@ -2210,7 +2210,7 @@ Question(
   reference: "BD 교재 2장 5절 p.34",
 ),
 Question(
-  id: "65",
+  id: "95",
   question: "CX 개선을 위한 고객 여정 분석(Journey Mapping)의 주요 목적은 무엇인가?",
   type: "BD",
   options: [
@@ -2234,7 +2234,7 @@ Question(
 ),
 
 Question(
-  id: "66",
+  id: "96",
   question: "애플리케이션 현대화 시 발생 가능한 가장 큰 보안 리스크는?",
   type: "BD",
   options: [
@@ -2258,7 +2258,7 @@ Question(
 ),
 
 Question(
-  id: "67",
+  id: "97",
   question: "DevOps의 주요 목적은?",
   type: "BD",
   options: [
@@ -2282,7 +2282,7 @@ Question(
 ),
 
 Question(
-  id: "68",
+  id: "98",
   question: "AI 프로젝트 수행 시 PoC 단계의 주요 목적은?",
   type: "BD",
   options: [
@@ -2306,7 +2306,7 @@ Question(
 ),
 
 Question(
-  id: "69",
+  id: "99",
   question: "데이터 레이크(Data Lake)의 특징으로 가장 적절한 것은?",
   type: "BD",
   options: [
@@ -2330,7 +2330,7 @@ Question(
 ),
 
 Question(
-  id: "70",
+  id: "100",
   question: "다음 중 AI 활용에 따른 윤리적 고려사항으로 적절하지 않은 것은?",
   type: "BD",
   options: [
@@ -2353,7 +2353,7 @@ Question(
   reference: "BD 교재 2장 5절 p.36",
 ),
 Question(
-  id: "71",
+  id: "101",
   question: "SaaS(Software as a Service)의 대표적인 장점으로 가장 적절한 것은?",
   type: "BD",
   options: [
@@ -2377,7 +2377,7 @@ Question(
 ),
 
 Question(
-  id: "72",
+  id: "102",
   question: "LG CNS의 AIDD는 주로 어떤 기능에 중점을 둔 플랫폼인가?",
   type: "BD",
   options: [
@@ -2401,7 +2401,7 @@ Question(
 ),
 
 Question(
-  id: "73",
+  id: "103",
   question: "Agile 방법론에서 '스프린트(Sprint)'란 무엇을 의미하는가?",
   type: "BD",
   options: [
@@ -2425,7 +2425,7 @@ Question(
 ),
 
 Question(
-  id: "74",
+  id: "104",
   question: "클라우드 보안에서 '제로 트러스트(Zero Trust)' 모델의 핵심 개념은 무엇인가?",
   type: "BD",
   options: [
@@ -2449,7 +2449,7 @@ Question(
 ),
 
 Question(
-  id: "75",
+  id: "105",
   question: "데이터 기반 의사결정의 핵심 단계가 아닌 것은?",
   type: "BD",
   options: [
@@ -2473,7 +2473,7 @@ Question(
 ),
 
 Question(
-  id: "76",
+  id: "106",
   question: "LG CNS의 PerfecTwin은 어떤 기술 기반의 플랫폼인가?",
   type: "BD",
   options: [
@@ -2497,7 +2497,7 @@ Question(
 ),
 
 Question(
-  id: "77",
+  id: "107",
   question: "CX 전략 수립 시 고려해야 할 주요 요소는?",
   type: "BD",
   options: [
@@ -2521,7 +2521,7 @@ Question(
 ),
 
 Question(
-  id: "78",
+  id: "108",
   question: "다음 중 AI 프로젝트에서 MLOps의 역할로 가장 적절한 것은?",
   type: "BD",
   options: [
@@ -2545,7 +2545,7 @@ Question(
 ),
 
 Question(
-  id: "79",
+  id: "109",
   question: "클라우드 인프라 환경에서 IaC(Infrastructure as Code)의 장점은?",
   type: "BD",
   options: [
@@ -2569,7 +2569,7 @@ Question(
 ),
 
 Question(
-  id: "80",
+  id: "110",
   question: "LG CNS의 마케팅 최적화 플랫폼은 어떤 기능을 포함하는가?",
   type: "BD",
   options: [
@@ -2592,7 +2592,7 @@ Question(
   reference: "BD 교재 4장 4절 p.54",
 ),
 Question(
-  id: "81",
+  id: "111",
   question: "다음 중 디지털 워크플레이스 구축의 핵심 요소로 가장 적절한 것은?",
   type: "STAFF",
   options: [
@@ -2616,7 +2616,7 @@ Question(
 ),
 
 Question(
-  id: "82",
+  id: "112",
   question: "다음 중 CX(Customer Experience) 개선을 위한 전략으로 가장 거리가 먼 것은?",
   type: "STAFF",
   options: [
@@ -2640,7 +2640,7 @@ Question(
 ),
 
 Question(
-  id: "83",
+  id: "113",
   question: "Agile 방법론의 특징으로 가장 적절한 것은?",
   type: "STAFF",
   options: [
@@ -2664,7 +2664,7 @@ Question(
 ),
 
 Question(
-  id: "84",
+  id: "114",
   question: "클라우드 전환 시 고려해야 할 가장 중요한 보안 요소는 무엇인가?",
   type: "STAFF",
   options: [
@@ -2688,7 +2688,7 @@ Question(
 ),
 
 Question(
-  id: "85",
+  id: "115",
   question: "IT 신기술 도입 시 고려해야 할 요소로 가장 적절한 것은?",
   type: "STAFF",
   options: [
@@ -2711,7 +2711,7 @@ Question(
   reference: "STAFF 교재 1장 2절 p.10",
 ),
 Question(
-  id: "86",
+  id: "116",
   question: "클라우드 환경에서 'Auto Scaling'의 가장 큰 장점은 무엇인가?",
   type: "STAFF",
   options: [
@@ -2735,7 +2735,7 @@ Question(
 ),
 
 Question(
-  id: "87",
+  id: "117",
   question: "데이터 기반 의사결정에서 가장 먼저 수행해야 할 단계는?",
   type: "STAFF",
   options: [
@@ -2759,7 +2759,7 @@ Question(
 ),
 
 Question(
-  id: "88",
+  id: "118",
   question: "AI 기술 적용 시 고려해야 할 윤리적 요소로 적절하지 않은 것은?",
   type: "STAFF",
   options: [
@@ -2783,7 +2783,7 @@ Question(
 ),
 
 Question(
-  id: "89",
+  id: "119",
   question: "다음 중 클라우드 전환 시 예상되는 장점이 아닌 것은?",
   type: "STAFF",
   options: [
@@ -2807,7 +2807,7 @@ Question(
 ),
 
 Question(
-  id: "90",
+  id: "120",
   question: "Agile 방식에서 요구사항 변경이 발생했을 때 가장 바람직한 대응은?",
   type: "STAFF",
   options: [
@@ -2830,7 +2830,7 @@ Question(
   reference: "STAFF 교재 2장 2절 p.19",
 ),
 Question(
-  id: "91",
+  id: "121",
   question: "다음 중 CX 전략 수립 시 가장 우선적으로 고려해야 할 사항은?",
   type: "STAFF",
   options: [
@@ -2854,7 +2854,7 @@ Question(
 ),
 
 Question(
-  id: "92",
+  id: "122",
   question: "AI 기반 시스템의 설명 가능성(Explainability)이 중요한 이유는?",
   type: "STAFF",
   options: [
@@ -2878,7 +2878,7 @@ Question(
 ),
 
 Question(
-  id: "93",
+  id: "123",
   question: "클라우드 도입 시 비용 최적화를 위한 주요 방법은?",
   type: "STAFF",
   options: [
@@ -2902,7 +2902,7 @@ Question(
 ),
 
 Question(
-  id: "94",
+  id: "124",
   question: "다음 중 Agile 방법론의 스크럼(Scrum) 구성 요소가 아닌 것은?",
   type: "STAFF",
   options: [
@@ -2926,7 +2926,7 @@ Question(
 ),
 
 Question(
-  id: "95",
+  id: "125",
   question: "AI 프로젝트의 성패를 좌우하는 가장 중요한 요소는?",
   type: "STAFF",
   options: [
@@ -2950,7 +2950,7 @@ Question(
 ),
 
 Question(
-  id: "96",
+  id: "126",
   question: "보안 강화의 일환으로 고려해야 할 요소가 아닌 것은?",
   type: "STAFF",
   options: [
@@ -2974,7 +2974,7 @@ Question(
 ),
 
 Question(
-  id: "97",
+  id: "127",
   question: "다음 중 클라우드의 특징으로 적절하지 않은 것은?",
   type: "STAFF",
   options: [
@@ -2998,7 +2998,7 @@ Question(
 ),
 
 Question(
-  id: "98",
+  id: "128",
   question: "다음 중 CX 분석에서 사용되는 핵심 데이터가 아닌 것은?",
   type: "STAFF",
   options: [
@@ -3022,7 +3022,7 @@ Question(
 ),
 
 Question(
-  id: "99",
+  id: "129",
   question: "Agile 프로젝트에서 데일리 스크럼 미팅의 주 목적은?",
   type: "STAFF",
   options: [
@@ -3046,7 +3046,7 @@ Question(
 ),
 
 Question(
-  id: "100",
+  id: "130",
   question: "다음 중 보안 정책 수립 시 우선적으로 고려해야 할 것은?",
   type: "STAFF",
   options: [
@@ -3069,7 +3069,7 @@ Question(
   reference: "STAFF 교재 3장 4절 p.43",
 ),
 Question(
-  id: "101",
+  id: "131",
   question: "클라우드 인프라 환경에서 IaC(Infrastructure as Code)의 장점은 무엇인가?",
   type: "STAFF",
   options: [
@@ -3093,7 +3093,7 @@ Question(
 ),
 
 Question(
-  id: "102",
+  id: "132",
   question: "AI 프로젝트에서 모델 학습 이후 수행해야 할 단계로 가장 적절한 것은?",
   type: "STAFF",
   options: [
@@ -3117,7 +3117,7 @@ Question(
 ),
 
 Question(
-  id: "103",
+  id: "133",
   question: "데이터 분석에서 '정규화'의 주요 목적은?",
   type: "STAFF",
   options: [
@@ -3141,7 +3141,7 @@ Question(
 ),
 
 Question(
-  id: "104",
+  id: "134",
   question: "애자일 환경에서 '지속적 통합(Continuous Integration)'의 목적은?",
   type: "STAFF",
   options: [
@@ -3165,7 +3165,7 @@ Question(
 ),
 
 Question(
-  id: "105",
+  id: "135",
   question: "다음 중 고객 경험(CX) 향상을 위한 기술이 아닌 것은?",
   type: "STAFF",
   options: [

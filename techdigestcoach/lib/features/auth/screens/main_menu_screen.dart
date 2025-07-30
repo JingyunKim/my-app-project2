@@ -60,7 +60,7 @@ class MainMenuScreen extends StatelessWidget {
               const SizedBox(height: 16),
               TextField(
                 controller: nicknameController,
-                maxLength: 6,
+                maxLength: 10,
                 decoration: InputDecoration(
                   hintText: '닉네임을 입력하세요',
                   hintStyle: AppTextStyles.body.copyWith(
