@@ -26,7 +26,6 @@ import '../../practice/screens/practice_screen.dart';
 import '../../exam/screens/exam_screen.dart';
 import '../../history/screens/history_screen.dart';
 import 'group_selection_screen.dart';
-import '../../settings/screens/settings_screen.dart';
 
 /// 학습 유형 선택 화면 위젯
 class MainMenuScreen extends StatelessWidget {
@@ -130,6 +129,130 @@ class MainMenuScreen extends StatelessWidget {
     );
   }
 
+  /// 앱 정보 표시 메소드
+  void _showAppInfo(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            '앱 정보',
+            style: AppTextStyles.heading.copyWith(
+              color: AppColors.text,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'TechDigestCoach',
+                style: AppTextStyles.heading.copyWith(
+                  color: AppColors.text,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '버전: 1.0.0',
+                style: AppTextStyles.body.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                '개발자 정보',
+                style: AppTextStyles.heading.copyWith(
+                  color: AppColors.text,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '만든이: chim\nEmail: wlsrbs321@naver.com',
+                style: AppTextStyles.body.copyWith(
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                '확인',
+                style: AppTextStyles.button.copyWith(
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// 데이터 초기화 확인 다이얼로그 표시 메소드
+  void _showDataResetDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            '데이터 초기화',
+            style: AppTextStyles.heading.copyWith(
+              color: AppColors.text,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: Text(
+            '모든 학습 데이터가 삭제됩니다.\n계속하시겠습니까?',
+            style: AppTextStyles.body.copyWith(
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                '취소',
+                style: AppTextStyles.button.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.read<AppState>().resetData();
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const GroupSelectionScreen()),
+                  (route) => false,
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                '초기화',
+                style: AppTextStyles.button.copyWith(
+                  color: AppColors.surface,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   /// 학습 유형 선택 화면 UI를 구성하는 메소드
   @override
   Widget build(BuildContext context) {
@@ -165,13 +288,13 @@ class MainMenuScreen extends StatelessWidget {
           },
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.settings_outlined, color: AppColors.textSecondary),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SettingsScreen()),
-              );
-            },
+          GestureDetector(
+            onTap: () => _showAppInfo(context),
+            onLongPress: () => _showDataResetDialog(context),
+            child: IconButton(
+              icon: Icon(Icons.info_outline, color: AppColors.textSecondary),
+              onPressed: () => _showAppInfo(context),
+            ),
           ),
         ],
       ),

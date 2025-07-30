@@ -23,7 +23,6 @@ import '../../../providers/app_state.dart';
 // 화면 import
 import 'main_menu_screen.dart';
 import 'nickname_screen.dart';
-import '../../settings/screens/settings_screen.dart';
 
 /// 과목 선택 화면 위젯
 class GroupSelectionScreen extends StatelessWidget {
@@ -56,12 +55,71 @@ class GroupSelectionScreen extends StatelessWidget {
         elevation: 0,
         automaticallyImplyLeading: false,
         actions: [
-          // 설정 버튼
           IconButton(
-            icon: Icon(Icons.settings_outlined, color: AppColors.textSecondary),
+            icon: Icon(Icons.info_outline, color: AppColors.textSecondary),
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(
+                      '앱 정보',
+                      style: AppTextStyles.heading.copyWith(
+                        color: AppColors.text,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'TechDigestCoach',
+                          style: AppTextStyles.heading.copyWith(
+                            color: AppColors.text,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '버전: 1.0.0',
+                          style: AppTextStyles.body.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          '개발자 정보',
+                          style: AppTextStyles.heading.copyWith(
+                            color: AppColors.text,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '만든이: chim\nEmail: wlsrbs321@naver.com',
+                          style: AppTextStyles.body.copyWith(
+                            color: AppColors.textSecondary,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(
+                          '확인',
+                          style: AppTextStyles.button.copyWith(
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               );
             },
           ),
