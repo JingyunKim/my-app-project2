@@ -79,62 +79,95 @@ class GroupSelectionScreen extends StatelessWidget {
           ),
         ),
         child: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  // 메인 타이틀
-                  Text(
-                    'TechDigest',
-                    style: AppTextStyles.heading.copyWith(
-                      color: AppColors.staffAccent,  // 밝은 청록색으로 변경
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+                // 메인 타이틀
+                Text(
+                  'TechDigestCoach',
+                  style: AppTextStyles.heading.copyWith(
+                    color: AppColors.text,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '환영합니다!',
-                    style: AppTextStyles.heading.copyWith(
-                      color: AppColors.text,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                    ),
+                ),
+                const SizedBox(height: 16),
+                // 안내 텍스트
+                Text(
+                  '학습하고자 하는 TechDigest 과목을\n선택해주세요.',
+                  style: AppTextStyles.subtitle.copyWith(
+                    color: AppColors.textSecondary,
+                    height: 1.6,
                   ),
-                  const SizedBox(height: 16),
-                  // 안내 텍스트
-                  Text(
-                    '학습하고자 하는 TechDigest 과목을\n선택해주세요.',
-                    style: AppTextStyles.subtitle.copyWith(
-                      color: AppColors.textSecondary,
-                      height: 1.6,
-                    ),
+                ),
+                const SizedBox(height: 40),
+                // 과목 선택 카드들
+                Expanded(
+                  child: Column(
+                    children: [
+                      // BD 과목 카드
+                      Expanded(
+                        child: _GroupCard(
+                          title: 'BD 과목',
+                          subtitle: '',
+                          description: '',
+                          icon: Icons.business_outlined,
+                          color: AppColors.primary,
+                          onTap: () => _handleGroupSelection(context, UserGroup.bd),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // STAFF 과목 카드
+                      Expanded(
+                        child: _GroupCard(
+                          title: 'STAFF 과목',
+                          subtitle: '',
+                          description: '',
+                          icon: Icons.people_outline,
+                          color: AppColors.staffPrimary,
+                          onTap: () => _handleGroupSelection(context, UserGroup.staff),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      // 참고사항
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: AppColors.border,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              color: AppColors.textSecondary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                '참고사항: 본 앱의 문제는 교재를 기반으로 제작되었으며, 실제 시험 유형과는 차이가 있을 수 있습니다.',
+                                style: AppTextStyles.caption.copyWith(
+                                  color: AppColors.textSecondary,
+                                  height: 1.4,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 40),
-                  // BD 과목 카드
-                  _GroupCard(
-                    title: 'BD 과목',
-                    subtitle: 'BD(Business Development)',
-                    description: '비즈니스 관련 문제를 풀어보세요',
-                    icon: Icons.business_outlined,
-                    color: AppColors.primary,
-                    onTap: () => _handleGroupSelection(context, UserGroup.bd),
-                  ),
-                  const SizedBox(height: 16),
-                  // STAFF 과목 카드
-                  _GroupCard(
-                    title: 'STAFF 과목',
-                    subtitle: '스태프(Staff)',
-                    description: '일반 업무 관련 문제를 풀어보세요',
-                    icon: Icons.people_outline,
-                    color: AppColors.staffPrimary,
-                    onTap: () => _handleGroupSelection(context, UserGroup.staff),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -157,8 +190,8 @@ class _GroupCard extends StatelessWidget {
     required this.subtitle,
     required this.description,
     required this.icon,
-    required this.color,
     required this.onTap,
+    required this.color,
   });
 
   @override
@@ -177,8 +210,8 @@ class _GroupCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: color.withOpacity(0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -187,55 +220,42 @@ class _GroupCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(20),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 타이틀 행
-                Row(
+          child: Stack(
+            children: [
+              // 배경 아이콘
+              Positioned(
+                right: -20,
+                bottom: -20,
+                child: Icon(
+                  icon,
+                  size: 180,
+                  color: Colors.white.withOpacity(0.2),
+                ),
+              ),
+              // 컨텐츠
+              Padding(
+                padding: const EdgeInsets.all(28),
+                child: Row(
                   children: [
                     Icon(
                       icon,
-                      color: AppColors.surface,
-                      size: 24,
+                      size: 44,  // 아이콘 크기 증가
+                      color: Colors.white,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 20),
                     Text(
                       title,
                       style: AppTextStyles.heading.copyWith(
-                        color: AppColors.surface,
-                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        fontSize: 38,  // 제목 크기 증가
+                        fontWeight: FontWeight.bold,
+                        height: 1.2,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                // 서브타이틀
-                Padding(
-                  padding: const EdgeInsets.only(left: 36),
-                  child: Text(
-                    subtitle,
-                    style: AppTextStyles.subtitle.copyWith(
-                      color: AppColors.surface.withOpacity(0.9),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                // 설명
-                Padding(
-                  padding: const EdgeInsets.only(left: 36, right: 24),
-                  child: Text(
-                    description,
-                    style: AppTextStyles.body.copyWith(
-                      color: AppColors.surface.withOpacity(0.8),
-                      height: 1.3,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

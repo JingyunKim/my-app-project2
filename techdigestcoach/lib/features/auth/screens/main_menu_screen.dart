@@ -312,7 +312,7 @@ class MainMenuScreen extends StatelessWidget {
                               child: _ManagementButton(
                                 title: '학습 이력 확인' ,
                                 icon: Icons.history,
-                                color: accentColor, // 투명도 제거
+                                color: AppColors.textSecondary, // 회색톤으로 변경
                                 onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
@@ -479,12 +479,19 @@ class _ManagementButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: color.withOpacity(0.3),
+              color: AppColors.border,
               width: 1,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.text.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -499,7 +506,7 @@ class _ManagementButton extends StatelessWidget {
                 title,
                 style: AppTextStyles.button.copyWith(
                   color: color,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],

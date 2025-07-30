@@ -1,7 +1,7 @@
 /// 설정 화면
 /// 
 /// 사용자가 앱 설정을 관리할 수 있는 화면입니다.
-/// 데이터 초기화, 앱 설명 등의 기능을 제공합니다.
+/// 앱 정보 확인과 데이터 초기화 기능을 제공합니다.
 /// 
 /// 작성자: 개발팀
 /// 작성일: 2024
@@ -19,7 +19,6 @@ import '../../../providers/app_state.dart';
 
 // 화면 import
 import '../../auth/screens/group_selection_screen.dart';
-import '../../auth/screens/nickname_screen.dart';
 
 /// 설정 화면 위젯
 class SettingsScreen extends StatelessWidget {
@@ -40,7 +39,7 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           content: Text(
-            '모든 학습 데이터가 삭제됩니다.\n정말 초기화하시겠습니까?',
+            '모든 학습 데이터가 삭제됩니다.\n계속하시겠습니까?',
             style: AppTextStyles.body.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -55,16 +54,16 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
             ),
-                          ElevatedButton(
-                onPressed: () {
-                  // 데이터 초기화 로직
-                  context.read<AppState>().resetData();
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => const NicknameScreen()),
-                    (route) => false,
-                  );
-                },
+            ElevatedButton(
+              onPressed: () {
+                context.read<AppState>().resetData();
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (_) => const GroupSelectionScreen(),
+                  ),
+                  (route) => false,
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.error,
                 shape: RoundedRectangleBorder(
@@ -84,110 +83,15 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  /// 닉네임 변경 처리 메소드
-  void _handleNicknameChange(BuildContext context) {
-    print('닉네임 변경 요청');
-    final currentUser = context.read<AppState>().currentUser;
-    final nicknameController = TextEditingController(text: currentUser?.nickname ?? '');
-    
+  /// 앱 정보 표시 메소드
+  void _showAppInfo(BuildContext context) {
+    print('앱 정보 표시');
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            '닉네임 변경',
-            style: AppTextStyles.heading.copyWith(
-              color: AppColors.text,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '새로운 닉네임을 입력해주세요',
-                style: AppTextStyles.body.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: nicknameController,
-                maxLength: 10,
-                decoration: InputDecoration(
-                  hintText: '닉네임을 입력하세요',
-                  hintStyle: AppTextStyles.body.copyWith(
-                    color: AppColors.textLight,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.primary),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
-                style: AppTextStyles.body,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                '취소',
-                style: AppTextStyles.button.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final newNickname = nicknameController.text.trim();
-                if (newNickname.isNotEmpty) {
-                  context.read<AppState>().updateNickname(newNickname);
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('닉네임이 변경되었습니다.'),
-                      backgroundColor: AppColors.success,
-                    ),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                '변경',
-                style: AppTextStyles.button.copyWith(
-                  color: AppColors.surface,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// 문의하기 처리 메소드
-  void _handleContact(BuildContext context) {
-    print('문의하기 요청');
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            '문의하기',
+            '앱 정보',
             style: AppTextStyles.heading.copyWith(
               color: AppColors.text,
               fontWeight: FontWeight.w600,
@@ -198,124 +102,42 @@ class SettingsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '문의사항이 있으시면 아래 연락처로 연락해주세요.',
+                'TechDigestCoach',
+                style: AppTextStyles.subtitle.copyWith(
+                  color: AppColors.text,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '버전: 1.0.0',
                 style: AppTextStyles.body.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
               const SizedBox(height: 16),
-              _ContactItem(
-                icon: Icons.email_outlined,
-                title: '이메일',
-                value: 'techdigest@lgcns.com',
-                onTap: () {
-                  // 이메일 앱 실행 로직 (추후 구현)
-                },
+              Text(
+                '개발자 정보',
+                style: AppTextStyles.subtitle.copyWith(
+                  color: AppColors.text,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: 8),
-              _ContactItem(
-                icon: Icons.phone_outlined,
-                title: '전화번호',
-                value: '02-1234-5678',
-                onTap: () {
-                  // 전화 앱 실행 로직 (추후 구현)
-                },
+              Text(
+                '만든이: 김진균',
+                style: AppTextStyles.body.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
-              const SizedBox(height: 8),
-              _ContactItem(
-                icon: Icons.chat_outlined,
-                title: '채팅',
-                value: '평일 09:00-18:00',
-                onTap: () {
-                  // 채팅 앱 실행 로직 (추후 구현)
-                },
+              const SizedBox(height: 4),
+              Text(
+                'Email: wlsrbs321@naver.com',
+                style: AppTextStyles.body.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                '확인',
-                style: AppTextStyles.button.copyWith(
-                  color: AppColors.primary,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// 앱 설명 표시 메소드
-  void _showAppInfo(BuildContext context) {
-    print('앱 설명 표시');
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            '앱 설명',
-            style: AppTextStyles.heading.copyWith(
-              color: AppColors.text,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'TechDigest Coach',
-                  style: AppTextStyles.subtitle.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'LG CNS의 TechDigest 교재 기반 학습 앱입니다.',
-                  style: AppTextStyles.body.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  '주요 기능:',
-                  style: AppTextStyles.subtitle.copyWith(
-                    color: AppColors.text,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                _InfoItem(
-                  icon: Icons.book_outlined,
-                  title: '연습 모드',
-                  description: '시간 제한 없이 문제를 풀어보세요',
-                ),
-                const SizedBox(height: 8),
-                _InfoItem(
-                  icon: Icons.timer_outlined,
-                  title: '모의고사 모드',
-                  description: '30문제를 45분 안에 풀어보세요',
-                ),
-                const SizedBox(height: 8),
-                _InfoItem(
-                  icon: Icons.history_outlined,
-                  title: '학습 이력',
-                  description: '나의 학습 현황을 확인해보세요',
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  '버전: 1.0.0',
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.textLight,
-                  ),
-                ),
-              ],
-            ),
           ),
           actions: [
             TextButton(
@@ -374,19 +196,11 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 // 설정 메뉴
                 _SettingsCard(
-                  title: '닉네임 변경',
-                  subtitle: '사용자 닉네임을 변경합니다',
-                  icon: Icons.person_outline,
-                  color: AppColors.primary,
-                  onTap: () => _handleNicknameChange(context),
-                ),
-                const SizedBox(height: 16),
-                _SettingsCard(
-                  title: '문의하기',
-                  subtitle: '문의사항이 있으시면 연락해주세요',
-                  icon: Icons.contact_support_outlined,
+                  title: '앱 정보',
+                  subtitle: '앱 버전 및 개발자 정보',
+                  icon: Icons.info_outline,
                   color: AppColors.info,
-                  onTap: () => _handleContact(context),
+                  onTap: () => _showAppInfo(context),
                 ),
                 const SizedBox(height: 16),
                 _SettingsCard(
@@ -395,14 +209,6 @@ class SettingsScreen extends StatelessWidget {
                   icon: Icons.delete_outline,
                   color: AppColors.error,
                   onTap: () => _handleDataReset(context),
-                ),
-                const SizedBox(height: 16),
-                _SettingsCard(
-                  title: '앱 설명',
-                  subtitle: '앱에 대한 정보를 확인합니다',
-                  icon: Icons.info_outline,
-                  color: AppColors.info,
-                  onTap: () => _showAppInfo(context),
                 ),
               ],
             ),
