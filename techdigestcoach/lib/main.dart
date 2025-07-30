@@ -8,6 +8,7 @@
 /// 버전: 1.0.0
 
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:provider/provider.dart";
 
 // 스타일 import
@@ -21,8 +22,13 @@ import "providers/app_state.dart";
 import "features/auth/screens/splash_screen.dart";
 
 /// 앱의 메인 진입점
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   print("TechDigestCoach 앱이 시작됩니다.");
+  
+  // 화면 세로 고정
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  
   runApp(
     ChangeNotifierProvider(
       create: (context) => AppState(),
@@ -40,6 +46,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     print("MyApp build 메소드가 호출되었습니다.");
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "TechDigestCoach",
       theme: ThemeData(
         useMaterial3: true,
