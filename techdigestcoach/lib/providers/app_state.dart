@@ -27,73 +27,94 @@ class AppState extends ChangeNotifier {
   UserGroup _selectedGroup = UserGroup.bd;
   final List<StudyHistory> _studyHistory = [];
   int _examRound = 0;
+  bool _isLoading = true; // 로딩 상태 추가
 
   AppState() {
     _loadState();
   }
 
+  /// 로딩 상태 getter
+  bool get isLoading => _isLoading;
+
   /// 상태 로드 메소드
   Future<void> _loadState() async {
-    final prefs = await SharedPreferences.getInstance();
-    
-    // 사용자 정보 로드
-    final userJson = prefs.getString(_userKey);
-    if (userJson != null) {
-      final Map<String, dynamic> userMap = json.decode(userJson);
-      _currentUser = User(
-        nickname: userMap['nickname'],
-        group: UserGroup.values[userMap['group']],
-        lastLoginDate: DateTime.parse(userMap['lastLoginDate']),
-      );
-      // 사용자의 마지막 선택 그룹으로 설정
-      _selectedGroup = _currentUser!.group;
-    }
-
-    // 선택된 과목 로드 (사용자가 없을 때만)
-    if (_currentUser == null) {
-      final groupIndex = prefs.getInt(_groupKey);
-      if (groupIndex != null) {
-        _selectedGroup = UserGroup.values[groupIndex];
-      }
-    }
-
-    // 모의고사 회차 로드
-    _examRound = prefs.getInt(_examRoundKey) ?? 0;
-
-    // 학습 이력 로드
-    final historyJson = prefs.getString(_historyKey);
-    if (historyJson != null) {
-      try {
-        final List<dynamic> historyList = json.decode(historyJson);
-        _studyHistory.clear();
-        for (final item in historyList) {
-          try {
-            final questionData = item['question'] as Map<String, dynamic>?;
-            if (questionData != null) {
-              final question = Question.fromJson(questionData);
-              _studyHistory.add(StudyHistory(
-                id: item['id'] ?? 'legacy_${DateTime.now().millisecondsSinceEpoch}',
-                question: question,
-                group: item['group'] ?? 'bd',
-                isCorrect: item['isCorrect'] ?? false,
-                solvedDate: DateTime.parse(item['solvedDate']),
-                isPracticeMode: item['isPracticeMode'] ?? false,
-                examRound: item['examRound'],
-              ));
-            }
-          } catch (e) {
-            print('잘못된 학습 이력 데이터를 건너뜁니다: $e');
-            // 잘못된 데이터는 건너뛰고 계속 진행
-          }
-        }
-      } catch (e) {
-        print('학습 이력 로드 중 오류 발생: $e');
-        // 전체 로드 실패 시 빈 리스트로 초기화
-        _studyHistory.clear();
-      }
-    }
-
+    print("AppState 상태 로딩을 시작합니다.");
+    _isLoading = true;
     notifyListeners();
+    
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      
+      // 사용자 정보 로드
+      final userJson = prefs.getString(_userKey);
+      if (userJson != null) {
+        try {
+          final Map<String, dynamic> userMap = json.decode(userJson);
+          _currentUser = User(
+            nickname: userMap['nickname'],
+            group: UserGroup.values[userMap['group']],
+            lastLoginDate: DateTime.parse(userMap['lastLoginDate']),
+          );
+          // 사용자의 마지막 선택 그룹으로 설정
+          _selectedGroup = _currentUser!.group;
+          print("사용자 정보 로드 완료: ${_currentUser!.nickname}");
+        } catch (e) {
+          print("사용자 정보 로드 중 오류 발생: $e");
+          _currentUser = null;
+        }
+      } else {
+        print("저장된 사용자 정보가 없습니다.");
+      }
+
+      // 선택된 과목 로드 (사용자가 없을 때만)
+      if (_currentUser == null) {
+        final groupIndex = prefs.getInt(_groupKey);
+        if (groupIndex != null) {
+          _selectedGroup = UserGroup.values[groupIndex];
+        }
+      }
+
+      // 모의고사 회차 로드
+      _examRound = prefs.getInt(_examRoundKey) ?? 0;
+
+      // 학습 이력 로드
+      final historyJson = prefs.getString(_historyKey);
+      if (historyJson != null) {
+        try {
+          final List<dynamic> historyList = json.decode(historyJson);
+          _studyHistory.clear();
+          for (final item in historyList) {
+            try {
+              final questionData = item['question'] as Map<String, dynamic>?;
+              if (questionData != null) {
+                final question = Question.fromJson(questionData);
+                _studyHistory.add(StudyHistory(
+                  id: item['id'] ?? 'legacy_${DateTime.now().millisecondsSinceEpoch}',
+                  question: question,
+                  group: item['group'] ?? 'bd',
+                  isCorrect: item['isCorrect'] ?? false,
+                  solvedDate: DateTime.parse(item['solvedDate']),
+                  isPracticeMode: item['isPracticeMode'] ?? false,
+                  examRound: item['examRound'],
+                ));
+              }
+            } catch (e) {
+              print('잘못된 학습 이력 데이터를 건너뜁니다: $e');
+            }
+          }
+        } catch (e) {
+          print('학습 이력 로드 중 오류 발생: $e');
+          _studyHistory.clear();
+        }
+      }
+
+      print("AppState 상태 로딩이 완료되었습니다.");
+    } catch (e) {
+      print("AppState 상태 로딩 중 오류 발생: $e");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   /// 상태 저장 메소드

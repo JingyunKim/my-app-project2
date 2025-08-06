@@ -12,7 +12,7 @@ import "../../../core/theme/app_colors.dart";
 import "../../../core/theme/app_text_styles.dart";
 import "../../../providers/app_state.dart";
 import "nickname_screen.dart";
-import "main_menu_screen.dart";
+import "group_selection_screen.dart";
 
 /// 스플래시 화면 위젯
 class SplashScreen extends StatefulWidget {
@@ -32,19 +32,41 @@ class _SplashScreenState extends State<SplashScreen> {
 
   /// 다음 화면으로 자동 전환하는 메소드
   Future<void> _navigateToNextScreen() async {
-    print("2초 후 다음 화면으로 전환합니다.");
+    print("스플래시 화면에서 다음 화면으로 전환을 준비합니다.");
+    
+    // 최소 2초 대기 (스플래시 화면 표시 시간)
     await Future.delayed(const Duration(seconds: 2));
+    
     if (mounted) {
-      final appState = context.read<AppState>();
-      final user = appState.currentUser;
-      
-      if (user != null) {
-        // 이미 로그인된 경우 메인 메뉴로 이동
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const MainMenuScreen()),
-        );
-      } else {
-        // 로그인이 필요한 경우 닉네임 입력 화면으로 이동
+      try {
+        // AppState가 완전히 로드될 때까지 대기
+        final appState = context.read<AppState>();
+        
+        // 로딩이 완료될 때까지 대기
+        while (appState.isLoading) {
+          await Future.delayed(const Duration(milliseconds: 100));
+          if (!mounted) return;
+        }
+        
+        final user = appState.currentUser;
+        print("현재 사용자 정보: ${user?.nickname ?? '없음'}");
+        
+        if (user != null && user.nickname.isNotEmpty) {
+          // 이미 로그인된 경우 과목 선택 화면으로 이동
+          print("기존 사용자 발견: ${user.nickname}, 과목 선택 화면으로 이동합니다.");
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const GroupSelectionScreen()),
+          );
+        } else {
+          // 로그인이 필요한 경우 닉네임 입력 화면으로 이동
+          print("새로운 사용자이거나 닉네임이 없습니다. 닉네임 입력 화면으로 이동합니다.");
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const NicknameScreen()),
+          );
+        }
+      } catch (e) {
+        print("화면 전환 중 오류 발생: $e");
+        // 오류 발생 시 닉네임 입력 화면으로 이동
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const NicknameScreen()),
         );
