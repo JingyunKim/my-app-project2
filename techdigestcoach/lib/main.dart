@@ -5,7 +5,7 @@
 /// 
 /// 작성자: 개발팀
 /// 작성일: 2024
-/// 버전: 1.0.0
+/// 버전: 1.0.1
 
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";

@@ -1,10 +1,11 @@
 /// 스플래시 화면
 /// 
-/// 이 파일은 앱 작 시 표시되는 스플래시 화면을 정의합니다.
+/// 이 파일은 앱 시작 시 표시되는 스플래시 화면을 정의합니다.
+/// 사용자 정보를 확인하여 적절한 화면으로 자동 전환합니다.
 /// 
 /// 작성자: 개발팀
 /// 작성일: 2024
-/// 버전: 1.0.0
+/// 버전: 1.0.1
 
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
@@ -146,7 +147,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   const SizedBox(height: 32),
                   // 버전 정보
                   Text(
-                    "Version 1.0.0",
+                    "Version 1.0.1",
                     style: AppTextStyles.caption.copyWith(
                       color: AppColors.textLight,
                     ),
